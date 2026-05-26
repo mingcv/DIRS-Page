@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive Roadmap of Reflection Removal</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <header data-roadmap-section="single">
+    <h1>Roadmap of Single-Image Reflection Removal / Separation</h1>
+  </header>
+
+  <section class="toolbar" aria-label="Filter single-image timeline categories" data-roadmap-filter="single" data-roadmap-section="single">
+    <button class="chip active" data-filter="all">All</button>
+    <button class="chip" data-filter="gradient">Gradient / Edge / Corner</button>
+    <button class="chip" data-filter="manual">Manual / Language</button>
+    <button class="chip" data-filter="smooth">Blur / Smoothness / DoF</button>
+    <button class="chip" data-filter="deep">Perceptual / Pretrained</button>
+    <button class="chip" data-filter="ghosting">Ghosting</button>
+    <button class="chip" data-filter="data">Dataset</button>
+    <button class="chip" data-filter="pano">Panoramic</button>
+  </section>
+
+  <main class="wrap">
+    <section class="timeline-card single-roadmap" data-roadmap-section="single">
+      <div class="stage" id="singleStage">
+        <!-- This figure is redrawn from main.tex survey timeline2. Literature metadata is stored in data/roadmaps.json. -->
+        <svg id="singleTimeline" viewBox="0 0 1640 900" role="img" aria-label="Single-image reflection removal timeline">
+          <defs>
+            <marker id="singleArrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L10,5 L0,10 z" fill="#111827"></path>
+            </marker>
+          </defs>
+
+          <g id="singleAxes"></g>
+          <g id="singlePapers"></g>
+
+          <g class="legend" transform="translate(820 776)">
+            <g transform="translate(-690 0)"><circle r="6" fill="white" stroke="#111827" stroke-width="2.4"></circle><text x="14" y="5">Optimization / Survey</text></g>
+            <g transform="translate(-430 0)"><path d="M0,-8 L8,7 L-8,7 Z" fill="white" stroke="#111827" stroke-width="2.4"></path><text x="18" y="5">Single-stream</text></g>
+            <g transform="translate(-210 0)"><rect x="-7" y="-7" width="14" height="14" transform="rotate(45)" fill="white" stroke="#111827" stroke-width="2.4"></rect><text x="18" y="5">Cascaded / Iterative</text></g>
+            <g transform="translate(70 0)"><rect x="-7" y="-7" width="14" height="14" fill="white" stroke="#111827" stroke-width="2.4"></rect><text x="18" y="5">Dual-stream</text></g>
+            <g transform="translate(300 0)"><path d="M0,-9 L8,-3 L5,8 L-5,8 L-8,-3 Z" fill="white" stroke="#111827" stroke-width="2.4"></path><text x="18" y="5">Dual-stream with feature interactions</text></g>
+          </g>
+
+          <g class="legend" transform="translate(820 830)">
+            <g transform="translate(-690 0)"><circle r="6" class="legend-color single-gradient"></circle><text x="14" y="5">Gradient / edge / corner priors</text></g>
+            <g transform="translate(-390 0)"><circle r="6" class="legend-color single-manual"></circle><text x="14" y="5">Manual / language guided</text></g>
+            <g transform="translate(-125 0)"><circle r="6" class="legend-color single-smooth"></circle><text x="14" y="5">Blur / smoothness / DoF</text></g>
+            <g transform="translate(115 0)"><circle r="6" class="legend-color single-deep"></circle><text x="14" y="5">Perceptual / pretrained / adversarial</text></g>
+            <g transform="translate(465 0)"><circle r="6" class="legend-color single-ghosting"></circle><text x="14" y="5">Ghosting clues</text></g>
+          </g>
+
+          <g class="legend" transform="translate(820 862)">
+            <g transform="translate(-155 0)"><circle r="6" class="legend-color single-data"></circle><text x="14" y="5">Dataset contributions</text></g>
+            <g transform="translate(95 0)"><circle r="6" class="legend-color single-pano"></circle><text x="14" y="5">Panoramic images</text></g>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <section class="timeline-section-title" aria-labelledby="singleRoadmapTitle" data-roadmap-section="multiple">
+      <h2 id="singleRoadmapTitle">Supplementary Roadmap of Multiple-Image Reflection Removal / Separation</h2>
+    </section>
+
+    <section class="toolbar inline-toolbar" aria-label="Filter multiple-image timeline categories" data-roadmap-filter="multiple" data-roadmap-section="multiple">
+      <button class="chip active" data-filter="all">All</button>
+      <button class="chip" data-filter="polarization">Polarization</button>
+      <button class="chip" data-filter="motion">Motion / Shift</button>
+      <button class="chip" data-filter="stereo">Stereo</button>
+      <button class="chip" data-filter="general">General Multi-image</button>
+      <button class="chip" data-filter="flash">Flash / No-flash</button>
+      <button class="chip" data-filter="opposite">Opposite-view</button>
+    </section>
+
+    <section class="timeline-card" data-roadmap-section="multiple">
+      <div class="stage" id="stage">
+        <!-- viewBox controls the internal coordinate system: width=1500, height=760. Keep it aligned with SVG layout coordinates. -->
+        <svg id="timeline" viewBox="0 0 1500 760" role="img" aria-label="Interactive reflection removal timeline">
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L10,5 L0,10 z" fill="#111827"></path>
+            </marker>
+          </defs>
+
+          <g id="axes"></g>
+          <g id="papers"></g>
+
+          <!-- Shape legend position. Outer translate(x y): move the whole row; inner translate(x 0): adjust spacing between items. -->
+          <g class="legend" transform="translate(750 684)">
+            <g transform="translate(-445 0)"><circle r="6" fill="white" stroke="#111827" stroke-width="2.4"></circle><text x="14" y="5">Optimization-based / Survey</text></g>
+            <g transform="translate(-120 0)"><path d="M0,-8 L8,7 L-8,7 Z" fill="white" stroke="#111827" stroke-width="2.4"></path><text x="18" y="5">Single-stream Network</text></g>
+            <g transform="translate(205 0)"><rect x="-7" y="-7" width="14" height="14" transform="rotate(45)" fill="white" stroke="#111827" stroke-width="2.4"></rect><text x="18" y="5">Cascaded / Iterative Network</text></g>
+          </g>
+
+          <!-- Color legend position. Outer translate(x y): move the whole row; inner translate(x 0): adjust spacing between color items. -->
+          <g class="legend" transform="translate(750 722)">
+            <g transform="translate(-555 0)"><circle r="6" class="legend-color category-polarization"></circle><text x="14" y="5">Polarization-based</text></g>
+            <g transform="translate(-370 0)"><circle r="6" class="legend-color category-motion"></circle><text x="14" y="5">Motion / shift-based</text></g>
+            <g transform="translate(-170 0)"><circle r="6" class="legend-color category-stereo"></circle><text x="14" y="5">Stereo-based</text></g>
+            <g transform="translate(0 0)"><circle r="6" class="legend-color category-general"></circle><text x="14" y="5">General multiple-image</text></g>
+            <g transform="translate(245 0)"><circle r="6" class="legend-color category-flash"></circle><text x="14" y="5">Flash / no-flash pair</text></g>
+            <g transform="translate(455 0)"><circle r="6" class="legend-color category-opposite"></circle><text x="14" y="5">Paired reflection scene indicators</text></g>
+          </g>
+        </svg>
+      </div>
+    </section>
+  </main>
+
+  <aside id="detailsDrawer" class="details-drawer" aria-hidden="true" aria-label="Paper details">
+    <div class="drawer-inner" id="drawerContent"></div>
+  </aside>
+
+  <aside id="tooltip" class="tooltip" aria-hidden="true"></aside>
+
+  <script src="data/roadmaps.js"></script>
+  <script src="assets/app.js" defer></script>
+</body>
+</html>
