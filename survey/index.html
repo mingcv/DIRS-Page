@@ -11,15 +11,25 @@
     <h1>Roadmap of Single-Image Reflection Removal / Separation</h1>
   </header>
 
-  <section class="toolbar" aria-label="Filter single-image timeline categories" data-roadmap-filter="single" data-roadmap-section="single">
-    <button class="chip active" data-filter="all">All</button>
-    <button class="chip" data-filter="gradient">Gradient / Edge / Corner</button>
-    <button class="chip" data-filter="manual">Manual / Language</button>
-    <button class="chip" data-filter="smooth">Blur / Smoothness / DoF</button>
-    <button class="chip" data-filter="deep">Perceptual / Pretrained</button>
-    <button class="chip" data-filter="ghosting">Ghosting</button>
-    <button class="chip" data-filter="data">Dataset</button>
-    <button class="chip" data-filter="pano">Panoramic</button>
+  <section class="toolbar" aria-label="Filter single-image timeline" data-roadmap-filter="single" data-roadmap-section="single">
+    <span class="filter-label">Prior</span>
+    <button class="chip active" data-filter-type="prior" data-filter="all">All</button>
+    <button class="chip" data-filter-type="prior" data-filter="gradient">Gradient / Edge / Corner</button>
+    <button class="chip" data-filter-type="prior" data-filter="manual">Manual / Language</button>
+    <button class="chip" data-filter-type="prior" data-filter="smooth">Blur / Smoothness / DoF</button>
+    <button class="chip" data-filter-type="prior" data-filter="deep">Perceptual / Pretrained</button>
+    <button class="chip" data-filter-type="prior" data-filter="ghosting">Ghosting</button>
+    <button class="chip" data-filter-type="prior" data-filter="data">Dataset</button>
+    <button class="chip" data-filter-type="prior" data-filter="pano">Panoramic</button>
+
+    <span class="filter-break"></span>
+    <span class="filter-label">Structure</span>
+    <button class="chip active" data-filter-type="structure" data-filter="all">All</button>
+    <button class="chip" data-filter-type="structure" data-filter="circle">Optimization / Survey</button>
+    <button class="chip" data-filter-type="structure" data-filter="triangle">Single-stream</button>
+    <button class="chip" data-filter-type="structure" data-filter="diamond">Cascaded / Iterative</button>
+    <button class="chip" data-filter-type="structure" data-filter="rect">Dual-stream</button>
+    <button class="chip" data-filter-type="structure" data-filter="pentagon">Dual-stream + Interaction</button>
   </section>
 
   <main class="wrap">
@@ -64,14 +74,22 @@
       <h2 id="singleRoadmapTitle">Supplementary Roadmap of Multiple-Image Reflection Removal / Separation</h2>
     </section>
 
-    <section class="toolbar inline-toolbar" aria-label="Filter multiple-image timeline categories" data-roadmap-filter="multiple" data-roadmap-section="multiple">
-      <button class="chip active" data-filter="all">All</button>
-      <button class="chip" data-filter="polarization">Polarization</button>
-      <button class="chip" data-filter="motion">Motion / Shift</button>
-      <button class="chip" data-filter="stereo">Stereo</button>
-      <button class="chip" data-filter="general">General Multi-image</button>
-      <button class="chip" data-filter="flash">Flash / No-flash</button>
-      <button class="chip" data-filter="opposite">Opposite-view</button>
+    <section class="toolbar inline-toolbar" aria-label="Filter multiple-image timeline" data-roadmap-filter="multiple" data-roadmap-section="multiple">
+      <span class="filter-label">Prior</span>
+      <button class="chip active" data-filter-type="prior" data-filter="all">All</button>
+      <button class="chip" data-filter-type="prior" data-filter="polarization">Polarization</button>
+      <button class="chip" data-filter-type="prior" data-filter="motion">Motion / Shift</button>
+      <button class="chip" data-filter-type="prior" data-filter="stereo">Stereo</button>
+      <button class="chip" data-filter-type="prior" data-filter="general">General Multi-image</button>
+      <button class="chip" data-filter-type="prior" data-filter="flash">Flash / No-flash</button>
+      <button class="chip" data-filter-type="prior" data-filter="opposite">Opposite-view</button>
+
+      <span class="filter-break"></span>
+      <span class="filter-label">Structure</span>
+      <button class="chip active" data-filter-type="structure" data-filter="all">All</button>
+      <button class="chip" data-filter-type="structure" data-filter="circle">Optimization / Survey</button>
+      <button class="chip" data-filter-type="structure" data-filter="triangle">Single-stream</button>
+      <button class="chip" data-filter-type="structure" data-filter="diamond">Cascaded / Iterative</button>
     </section>
 
     <section class="timeline-card" data-roadmap-section="multiple">

@@ -27,7 +27,7 @@ const singleCategoryStyles = {
 };
 
 const singleShapeLabels = {
-  circle: 'Optimization-based Methods / Survey',
+  circle: 'Optimization-based / Survey',
   triangle: 'Single-Stream Network Structure',
   diamond: 'Cascaded / Iterative Network Structure',
   rect: 'Dual-Stream Network Structure',
@@ -73,9 +73,9 @@ const singleRows = [118, 382, 646];
 let singlePapers = [];
 
 const singleYearTicks = [
-  { year: 2002, x: -2, row: 0 }, { year: 2004, x: -0.5, row: 0 }, { year: 2005, x: 1.75, row: 0 }, { year: 2014, x: 2.75, row: 0 }, { year: 2015, x: 3.75, row: 0 }, { year: 2016, x: 5, row: 0 }, { year: 2017, x: 6.75, row: 0 }, { year: 2018, x: 9.5, row: 0 },
-  { year: 2019, x: -2, row: 1 }, { year: 2020, x: -1, row: 1 }, { year: 2021, x: 2.75, row: 1 }, { year: 2022, x: 12.5, row: 1 },
-  { year: 2023, x: -2, row: 2 }, { year: 2024, x: -0.5, row: 2 }, { year: 2025, x: 4.75, row: 2 }, { year: 2026, x: 9.5, row: 2 }
+  { year: 2002, x: -2, row: 0 }, { year: 2004, x: -0.5, row: 0 }, { year: 2005, x: 2, row: 0 }, { year: 2009, x: 3, row: 0 }, { year: 2010, x: 4, row: 0 }, { year: 2013, x: 5, row: 0 }, { year: 2014, x: 6, row: 0 }, { year: 2015, x: 7.5, row: 0 }, { year: 2016, x: 9.25, row: 0 }, { year: 2017, x: 10.75, row: 0 },
+  { year: 2018, x: -2, row: 1 }, { year: 2019, x: 1.6, row: 1 }, { year: 2020, x: 2.5, row: 1 }, { year: 2021, x: 7.25, row: 1 },
+  { year: 2022, x: -0.5, row: 2 }, { year: 2023, x: 1.7, row: 2 }, { year: 2024, x: 4.5, row: 2 }, { year: 2025, x: 10.3, row: 2 }, { year: 2026, x: 13, row: 2 }
 ];
 
 const axes = document.getElementById('axes');
@@ -90,6 +90,10 @@ let hideTooltipTimer = null;
 let activeTooltipPaper = null;
 const tooltipHideDelayMs = 900;
 const roadmapMode = new URLSearchParams(window.location.search).get('roadmap');
+const activeFilters = {
+  multiple: { prior: 'all', structure: 'all' },
+  single: { prior: 'all', structure: 'all' }
+};
 
 const svgNS = 'http://www.w3.org/2000/svg';
 
@@ -214,7 +218,7 @@ function drawPapers() {
     const y = rows[paper.row];
     const x = timelineX(paper.x);
     const style = categoryStyles[paper.category];
-    const group = el('g', { class: 'paper-group', tabindex: '0', 'data-category': paper.category, 'data-roadmap': 'multiple' });
+    const group = el('g', { class: 'paper-group', tabindex: '0', 'data-category': paper.category, 'data-shape': paper.shape, 'data-roadmap': 'multiple' });
     group.dataset.index = String(index);
 
     group.appendChild(el('line', {
@@ -290,9 +294,14 @@ function drawSingleAxes() {
     singleAxes.appendChild(text);
   });
 
-  const ellipsis = el('text', { x: singleTimelineX(2.25), y: singleRows[0] + 25, class: 'year', 'text-anchor': 'middle' });
-  ellipsis.textContent = '...';
-  singleAxes.appendChild(ellipsis);
+  [
+    { x: 2.53, row: 0 },
+    { x: 4.53, row: 0 }
+  ].forEach(mark => {
+    const ellipsis = el('text', { x: singleTimelineX(mark.x), y: singleRows[mark.row] + 25, class: 'year', 'text-anchor': 'middle' });
+    ellipsis.textContent = '...';
+    singleAxes.appendChild(ellipsis);
+  });
 }
 
 function splitSingleLabelLine(text, maxChars = 25, maxLines = 3) {
@@ -338,6 +347,7 @@ function drawSinglePapers() {
       class: 'paper-group single-paper-group',
       tabindex: '0',
       'data-category': paper.category,
+      'data-shape': paper.shape,
       'data-roadmap': 'single'
     });
     const title = el('title');
@@ -395,14 +405,6 @@ function escapeHtml(value) {
   })[char]);
 }
 
-function paperVenueLabel(paper) {
-  const venue = String(paper.venue ?? '');
-  const year = String(paper.year ?? '');
-  if (!venue) return '';
-  if (!year) return venue;
-  return venue.includes(year) ? venue : `${venue} · ${year}`;
-}
-
 function paperDisplayTitle(paper) {
   return paper.fullTitle || paper.title;
 }
@@ -416,8 +418,8 @@ function tooltipCopyText(paper) {
   return [
     paperDisplayTitle(paper),
     paperDisplayAuthors(paper),
-    paperVenueLabel(paper),
-    `Method: ${paperShapeLabel(paper)}`,
+    `Prior: ${paperCategoryStyle(paper).label}`,
+    `Structure: ${paperShapeLabel(paper)}`,
     `Abstract: ${abstract}`,
     `Links: ${paperLinksText(paper)}`,
     `Contribution: ${paper.contribution || 'To be added.'}`
@@ -522,10 +524,9 @@ function openDetailsDrawer(paper) {
       <section class="drawer-section">
         <h3>Overview</h3>
         <div class="drawer-grid">
-          ${drawerRow('Venue', paperVenueLabel(paper))}
           <b>Year</b><span>${escapeHtml(paper.year)}</span>
-          <b>Category</b><span>${escapeHtml(style.label)}</span>
-          <b>Method</b><span>${escapeHtml(paperShapeLabel(paper))}</span>
+          <b>Prior</b><span>${escapeHtml(style.label)}</span>
+          <b>Structure</b><span>${escapeHtml(paperShapeLabel(paper))}</span>
       </div>
     </section>
 
@@ -567,14 +568,14 @@ function showTooltip(evt, paper) {
     <div class="tooltip-head">
         <div class="tooltip-top">
           <span class="tag" style="background:${escapeHtml(style.color)}">${escapeHtml(style.label)}</span>
-        ${paperVenueLabel(paper) ? `<span class="venue">${escapeHtml(paperVenueLabel(paper))}</span>` : ''}
       </div>
       <button class="copy-button" type="button" data-copy-tooltip>Copy</button>
     </div>
     <h2>${escapeHtml(paperDisplayTitle(paper))}</h2>
     <p class="authors">${escapeHtml(paper.authors)}</p>
     <div class="meta-grid">
-      <b>Method</b><span>${escapeHtml(paperShapeLabel(paper))}</span>
+      <b>Prior</b><span>${escapeHtml(style.label)}</span>
+      <b>Structure</b><span>${escapeHtml(paperShapeLabel(paper))}</span>
       <b>Abstract</b><span class="tooltip-abstract">${escapeHtml(abstract)}</span>
       <b>Links</b>${paperLinksHtml(paper)}
       <b>Contribution</b><span>${paperTextField(paper.contribution)}</span>
@@ -616,13 +617,20 @@ function clearTooltipHideTimer() {
   }
 }
 
-function setFilter(roadmap, filter) {
+function setFilter(roadmap, filterType, filter) {
+  const normalizedType = filterType === 'structure' ? 'structure' : 'prior';
+  activeFilters[roadmap][normalizedType] = filter;
   const toolbar = document.querySelector(`[data-roadmap-filter="${roadmap}"]`);
   if (toolbar) {
-    toolbar.querySelectorAll('.chip').forEach(chip => chip.classList.toggle('active', chip.dataset.filter === filter));
+    toolbar.querySelectorAll(`.chip[data-filter-type="${normalizedType}"]`).forEach(chip => {
+      chip.classList.toggle('active', chip.dataset.filter === filter);
+    });
   }
+  const { prior, structure } = activeFilters[roadmap];
   document.querySelectorAll(`.paper-group[data-roadmap="${roadmap}"]`).forEach(group => {
-    const match = filter === 'all' || group.dataset.category === filter;
+    const priorMatch = prior === 'all' || group.dataset.category === prior;
+    const structureMatch = structure === 'all' || group.dataset.shape === structure;
+    const match = priorMatch && structureMatch;
     group.classList.toggle('dimmed', !match);
   });
 }
@@ -630,7 +638,7 @@ function setFilter(roadmap, filter) {
 document.querySelectorAll('.chip').forEach(chip => {
   chip.addEventListener('click', () => {
     const toolbar = chip.closest('[data-roadmap-filter]');
-    setFilter(toolbar?.dataset.roadmapFilter || 'multiple', chip.dataset.filter);
+    setFilter(toolbar?.dataset.roadmapFilter || 'multiple', chip.dataset.filterType, chip.dataset.filter);
   });
 });
 
