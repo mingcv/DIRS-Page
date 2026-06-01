@@ -1262,20 +1262,20 @@
 
       function updateActive() {
         const viewportProbe = window.innerHeight * 0.42;
-        const hero = document.getElementById('hero');
-        let active = sections[0]?.id;
+        let active = null;
 
-        if (hero) {
-          const heroRect = hero.getBoundingClientRect();
-          if (heroRect.top <= viewportProbe && heroRect.bottom > viewportProbe) {
-            active = 'hero';
+        sections.forEach(section => {
+          const rect = section.getBoundingClientRect();
+          if (rect.top <= viewportProbe && rect.bottom > viewportProbe) {
+            active = section.id;
           }
-        }
+        });
 
-        if (active !== 'hero') {
+        if (!active) {
+          const y = window.scrollY + viewportProbe;
+          active = sections[0]?.id;
           sections.forEach(section => {
-            const rect = section.getBoundingClientRect();
-            if (rect.top <= viewportProbe && rect.bottom > viewportProbe) {
+            if (section.offsetTop <= y) {
               active = section.id;
             }
           });
