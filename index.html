@@ -1,93 +1,270 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Principled Reflection Separation via Nonlinear Superposition and Feature Interaction</title>
+  <title>DIRS: Principled Reflection Separation</title>
   <style>
-    /* ── 全局样式 & 页面布局 (白色主题) ── */
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: #fff;
-      color: #333;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      user-select: none;
+    :root {
+      --ink: #111318;
+      --muted: #5f6673;
+      --line: #e1e5eb;
+      --paper: #ffffff;
+      --soft: #f5f7fa;
+      --accent: #1f6feb;
+      --accent-dark: #0d3d8c;
+      --warm: #a65f2b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
       scroll-behavior: smooth;
+      background: #000;
     }
 
-    /* 改为宽屏布局 */
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.65;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .header-visual {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      height: 100vh;
+      background: #000 url("images/header.png") center center / cover no-repeat;
+      pointer-events: none;
+      will-change: opacity;
+    }
+
+    .header-visual::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.16));
+    }
+
+    .cover-scroll {
+      position: relative;
+      z-index: 1;
+      height: 100vh;
+      background: transparent;
+    }
+
+    .page {
+      position: relative;
+      z-index: 2;
+      background: var(--paper);
+      border-top: 1px solid rgba(255,255,255,0.55);
+      box-shadow: 0 -24px 80px rgba(0,0,0,0.18);
+    }
+
     .container {
-      max-width: 1840px;
+      width: min(1180px, calc(100% - 40px));
       margin: 0 auto;
-      padding: 20px 32px;
+      padding: 64px 0 88px;
     }
 
-    header, section {
+    header {
       text-align: center;
-      margin-bottom: 50px;
+      padding-bottom: 38px;
+      border-bottom: 1px solid var(--line);
     }
 
     h1 {
-      font-size: 2.5em;
-      color: #111;
-      margin-bottom: 10px;
+      max-width: 1040px;
+      margin: 0 auto 20px;
+      color: var(--ink);
+      font-size: clamp(2.2rem, 5vw, 4.8rem);
+      line-height: 1.04;
+      letter-spacing: 0;
+      font-weight: 780;
     }
 
-    h2 {
-      font-size: 1.8em;
-      color: #111;
-      border-bottom: 2px solid #ddd;
-      padding-bottom: 10px;
-      margin-top: 60px;
-      text-align: left;
-    }
-    
-    h3 {
-      font-size: 1.2em;
-      color: #555;
-      margin-top: 40px;
-      margin-bottom: 20px;
-      text-align: left;
+    .subtitle {
+      max-width: 880px;
+      margin: 0 auto 24px;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.25rem);
     }
 
     .authors {
-      font-size: 1.1em;
-      margin-bottom: 20px;
+      margin: 0 auto 20px;
+      color: #303642;
+      font-size: 1.04rem;
     }
 
     .authors a {
-      color: #007bff;
-      text-decoration: none;
+      font-weight: 620;
     }
-    .authors a:hover {
-      text-decoration: underline;
+
+    .affiliation {
+      margin: -8px 0 24px;
+      color: var(--muted);
+      font-size: 0.98rem;
     }
-    
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 22px;
+    }
+
     .links a {
-      color: #fff;
-      background-color: #007bff;
-      padding: 8px 15px;
-      border-radius: 5px;
-      text-decoration: none;
-      margin: 0 10px;
-      font-weight: bold;
-      transition: background-color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      min-height: 42px;
+      padding: 0 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 999px;
+      color: #172033;
+      background: #fff;
+      font-weight: 680;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
     }
-    .links a:hover {
-      background-color: #0056b3;
+
+    .links a.primary {
+      color: #fff;
+      border-color: var(--accent);
+      background: var(--accent);
+    }
+
+    section {
+      padding: 54px 0 0;
+    }
+
+    h2 {
+      margin: 0 0 20px;
+      font-size: clamp(1.7rem, 3vw, 2.5rem);
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 28px 0 14px;
+      font-size: 1.18rem;
+    }
+
+    .section-lead {
+      max-width: 900px;
+      margin: 0 auto 26px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 1.05rem;
     }
 
     .abstract {
+      max-width: 960px;
+      margin: 0 auto;
+      color: #333a46;
       text-align: left;
-      line-height: 1.6;
-      color: #666;
+      font-size: 1.05rem;
+    }
+
+    .figure {
+      margin: 26px auto;
+      text-align: center;
+    }
+
+    .figure img {
+      display: block;
+      max-width: 100%;
+      margin: 0 auto;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .figure.clean img {
+      border: 0;
+      border-radius: 0;
+    }
+
+    .caption {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 28px;
+    }
+
+    .method-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 22px;
+      background: linear-gradient(180deg, #fff, #f9fafc);
+      text-align: left;
+    }
+
+    .method-card h3 {
+      margin-top: 0;
+      color: var(--accent-dark);
+    }
+
+    .method-card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+      font-size: 0.96rem;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 13px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      background: var(--soft);
+      color: #263041;
+      font-weight: 720;
+    }
+
+    td.num, th.num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
     }
 
     .survey-frame {
       width: 100%;
-      border: 1px solid #ddd;
-      border-radius: 6px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
       background: #fff;
       display: block;
     }
@@ -100,277 +277,455 @@
       height: 1200px;
     }
 
-    @media (max-width: 900px) {
-      .container {
-        padding: 16px;
-      }
+    .demo-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
     }
 
-    .bibtex {
-      background: #f7f7f7;
-      border: 1px solid #ddd;
-      padding: 20px;
-      text-align: left;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      font-family: "Courier New", Courier, monospace;
-      color: #333;
-      border-radius: 5px;
+    .slider-pair {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      align-items: start;
     }
 
-    /* ── 滑块对比组件 ── */
     .slider-container {
       position: relative;
       width: 100%;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
       overflow: hidden;
+      background: #000;
     }
 
     .image-wrapper {
       position: relative;
       width: 100%;
-      padding-top: 66.66%; 
+      padding-top: 66.66%;
     }
 
     .image-wrapper img {
       position: absolute;
-      top: 0;
-      left: 0;
+      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-    
+
     .result-image {
       clip-path: inset(0 50% 0 0);
     }
 
-    /* 滑动条主体为黑色，与白色背景形成对比 */
     .slider-bar {
       position: absolute;
       top: 0;
       bottom: 0;
-      width: 2px;
-      background: #000;
       left: 50%;
+      width: 2px;
+      background: #fff;
       transform: translateX(-1px);
       z-index: 10;
       pointer-events: none;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.35);
     }
 
-    /* 恢复您喜欢的高对比度手柄样式，并适配白色背景 */
     .slider-handle {
       position: absolute;
       left: 50%;
       top: 50%;
-      transform: translate(-50%, -50%);
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      border: 2px solid #000; /* 黑色边框，保证可见性 */
-      background: #fff; /* 白色填充 */
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); /* 添加阴影使其“浮动”在背景之上 */
+      border: 2px solid #fff;
+      background: rgba(17, 19, 24, 0.82);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.32);
+      transform: translate(-50%, -50%);
       cursor: ew-resize;
       z-index: 11;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
-    
-    /* 箭头用黑色，在白色手柄上才可见 */
-    .slider-handle::before, .slider-handle::after {
-      content: '';
+
+    .slider-handle::before,
+    .slider-handle::after {
+      content: "";
       position: absolute;
+      top: 50%;
       width: 0;
       height: 0;
       border-style: solid;
+      transform: translateY(-50%);
     }
+
     .slider-handle::before {
+      left: 8px;
       border-width: 6px 8px 6px 0;
-      border-color: transparent black transparent transparent;
-      left: 6px;
+      border-color: transparent #fff transparent transparent;
     }
+
     .slider-handle::after {
+      right: 8px;
       border-width: 6px 0 6px 8px;
-      border-color: transparent transparent transparent black;
-      right: 6px;
+      border-color: transparent transparent transparent #fff;
     }
 
     .image-label {
       position: absolute;
       top: 10px;
-      padding: 5px 10px;
-      background: rgba(0, 0, 0, 0.7);
-      color: #fff;
-      font-size: 0.9em;
-      font-weight: bold;
-      border-radius: 3px;
       z-index: 5;
+      padding: 5px 10px;
+      border-radius: 4px;
+      color: #fff;
+      background: rgba(0,0,0,0.66);
+      font-size: 0.82rem;
+      font-weight: 720;
     }
+
     .label-left {
       left: 10px;
     }
+
     .label-right {
       right: 10px;
     }
-    
+
+    .bibtex {
+      margin: 0;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f8fafc;
+      color: #1f2937;
+      white-space: pre-wrap;
+      overflow-x: auto;
+      font-family: "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    footer {
+      padding: 38px 0 0;
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 900px) {
+      .container {
+        width: min(100% - 28px, 1180px);
+        padding-top: 44px;
+      }
+
+      .method-grid,
+      .slider-pair {
+        grid-template-columns: 1fr;
+      }
+
+      .survey-frame-main,
+      .survey-frame-supplementary {
+        height: 900px;
+      }
+    }
   </style>
 </head>
 <body>
+  <div id="headerVisual" class="header-visual" aria-hidden="true"></div>
+  <div class="cover-scroll" aria-label="DIRS visual cover"></div>
 
-  <div class="container">
-    <header>
-      <h1>Principled Reflection Separation via Nonlinear Superposition and Feature Interaction</h1>
-      <p class="authors">
-         <a href="https://scholar.google.com/citations?user=4zasPbwAAAAJ" target="_blank">Qiming Hu</a>, <a href="https://mingjia.li" target="_blank">Mingjia Li</a>, <a href="https://scholar.google.com/citations?user=Pu7-JBEAAAAJ" target="_blank">Yuntong Li</a>, and <a href="https://sites.google.com/view/xjguo/homepage" target="_blank">Xiaojie Guo</a>
-      </p>
-      <p class="links">
-        <a href="#" target="_blank">Paper</a>
-        <a href="https://github.com/mingcv/DIRS" target="_blank">Code</a>
-      </p>
-    </header>
+  <main class="page">
+    <div class="container">
+      <header>
+        <h1>Principled Reflection Separation via Nonlinear Superposition and Feature Interaction</h1>
+        <p class="subtitle">
+          A unified DIRS framework for reflection separation, reflection scene reconstruction,
+          and polarized multi-image reflection separation.
+        </p>
+        <p class="authors">
+          <a href="https://scholar.google.com/citations?user=4zasPbwAAAAJ" target="_blank" rel="noreferrer">Qiming Hu</a>,
+          <a href="https://mingjia.li" target="_blank" rel="noreferrer">Mingjia Li</a>,
+          <a href="https://scholar.google.com/citations?user=Pu7-JBEAAAAJ" target="_blank" rel="noreferrer">Yuntong Li</a>,
+          and <a href="https://sites.google.com/view/xjguo/homepage" target="_blank" rel="noreferrer">Xiaojie Guo</a>
+        </p>
+        <p class="affiliation">College of Intelligence and Computing, Tianjin University</p>
+        <nav class="links" aria-label="Project links">
+          <a class="primary" href="https://openreview.net/pdf?id=Shwtw8uV8l" target="_blank" rel="noreferrer">Paper</a>
+          <a href="https://github.com/mingcv/DIRS" target="_blank" rel="noreferrer">Code</a>
+          <a href="https://huggingface.co/huqiming513/DIRS-Models" target="_blank" rel="noreferrer">Models & Data</a>
+          <a href="#survey">Survey</a>
+          <a href="#demo">Interactive Demo</a>
+        </nav>
+      </header>
 
-    <section id="abstract">
-      <h2>Abstract</h2>
-      <p class="abstract">
-        Reflection superimposition, resulting from the entanglement of transmission and reflection layers in images, remains a long-standing challenge in computational photography and computer vision due to its inherently ill-posed nature. This work presents a comprehensive framework that advances both the theoretical understanding and practical effectiveness of single-image reflection separation. We begin by surveying and systematically categorizing decades of existing methods, offering an organized taxonomy based on input modalities, prior constraints, and architectural paradigms. Considering the limitations of existing single- and dual-branch models, we introduce a \emph{generalized dual-stream interactive architecture} that facilitates multi-scale and high-dimensional feature exchange between transmission and reflection pathways. This design unifies activation-based, gate-based, and attention-based interaction mechanisms, and is compatible with both CNN and Transformer backbones. Furthermore, we challenge the conventional linear composition model in the sRGB space and introduce a learnable nonlinear interaction term, which more accurately captures real-world layer blending and substantially improves decomposition fidelity. Extensive experiments on multiple real-world benchmarks demonstrate that our method achieves state-of-the-art performance and strong generalization. 
-      </p>
-    </section>
+      <section id="abstract">
+        <h2>Abstract</h2>
+        <p class="abstract">
+          Reflection superimposition, resulting from the entanglement of transmission and
+          reflection layers in images, remains a long-standing challenge in computational
+          photography and computer vision due to its inherently ill-posed nature. This work
+          presents a comprehensive framework that advances both the theoretical understanding
+          and practical effectiveness of single-image reflection separation. We begin by
+          surveying and systematically categorizing decades of existing methods, offering an
+          organized taxonomy based on input modalities, prior constraints, and architectural
+          paradigms. Considering the limitations of existing single- and dual-branch models,
+          we introduce a generalized dual-stream interactive architecture that facilitates
+          multi-scale and high-dimensional feature exchange between transmission and reflection
+          pathways. This design unifies activation-based, gate-based, and attention-based
+          interaction mechanisms, and is compatible with both CNN and Transformer backbones.
+          Furthermore, we challenge the conventional linear composition model in the sRGB
+          space and introduce a learnable nonlinear interaction term, which more accurately
+          captures real-world layer blending and substantially improves decomposition fidelity.
+        </p>
+      </section>
 
-    <section id="survey">
-      <h2>Survey</h2>
-      <h3>Roadmap of Single-Image Reflection Removal / Separation</h3>
-      <iframe class="survey-frame survey-frame-main" src="survey/index.html?roadmap=single" title="Interactive survey roadmap of single-image reflection removal methods"></iframe>
-      <h3>Supplementary Roadmap of Multiple-Image Reflection Removal / Separation</h3>
-      <iframe class="survey-frame survey-frame-supplementary" src="survey/index.html?roadmap=multiple" title="Interactive supplementary survey roadmap of multiple-image reflection removal methods"></iframe>
-    </section>
+      <section id="method">
+        <h2>DIRS Framework</h2>
+        <p class="section-lead">
+          DIRS couples a learnable nonlinear superposition model with explicit dual-stream
+          feature interaction, allowing transmission and reflection branches to exchange
+          discriminative evidence while preserving layer-specific structure.
+        </p>
+        <figure class="figure clean">
+          <img src="images/fig_arch_dirs.jpg" alt="DIRS architecture overview">
+        </figure>
+        <figure class="figure clean">
+          <img src="images/fig_dsim.jpg" alt="DIRS interaction block designs">
+        </figure>
 
-    <section id="demo">
-      <h2>Interactive Examples</h2>
-      <!-- 示例 1 -->
-      <h3>Example 1</h3>
-      <div class="slider-container" id="slider1">
-        <div class="image-wrapper">
-          <img src="https://raw.githubusercontent.com/mingcv/DIRS-Assets/main/images/DSC05593/m_input.png" alt="Input Image">
-          <img src="https://raw.githubusercontent.com/mingcv/DIRS-Assets/main/images/DSC05593/dsit_test_epoch66_real_tj_l.png" class="result-image" alt="Transmission Layer">
+        <div class="method-grid">
+          <article class="method-card">
+            <h3>DIRS-YTMT</h3>
+            <p>Activation-based CNN interaction that recycles suppressed features between streams.</p>
+          </article>
+          <article class="method-card">
+            <h3>DIRS-MuGI</h3>
+            <p>Mutually gated CNN interaction for spatially varying nonlinear reflection coupling.</p>
+          </article>
+          <article class="method-card">
+            <h3>DIRS-PAIR</h3>
+            <p>Transformer interaction with dual-stream joint attention and parallel self-attention.</p>
+          </article>
         </div>
-        <div class="slider-bar"></div>
-        <div class="slider-handle"></div>
-        <div class="image-label label-left">Input</div>
-        <div class="image-label label-right">Transmission Layer (Our Result)</div>
-      </div>
-      
-      <div class="slider-container" id="slider2" style="margin-top: 20px;">
-        <div class="image-wrapper" style="background-color: #000;">
-          <img src="https://raw.githubusercontent.com/mingcv/DIRS-Assets/main/images/DSC05593/dsit_test_epoch66_real_tj_r.png" class="result-image" alt="Reflection Layer">
-        </div>
-        <div class="slider-bar"></div>
-        <div class="slider-handle"></div>
-        <div class="image-label label-left">Black Background</div>
-        <div class="image-label label-right">Reflection Layer (Our Result)</div>
-      </div>
+      </section>
 
-      <!-- 示例 2 -->
-      <h3>Example 2</h3>
-      <div class="slider-container" id="slider3">
-        <div class="image-wrapper">
-          <img src="https://raw.githubusercontent.com/mingcv/DIRS-Assets/main/images/DSC05764/m_input.png" alt="Input Image">
-          <img src="https://raw.githubusercontent.com/mingcv/DIRS-Assets/main/images/DSC05764/dsit_test_epoch66_real_tj_l.png" class="result-image" alt="Transmission Layer">
+      <section id="models">
+        <h2>Model Zoo</h2>
+        <p class="section-lead">
+          FLOPs and latency are measured on a single NVIDIA RTX 3090 with 256 x 256 inputs.
+          PSNR/SSIM are averaged over Real20 and SIR<sup>2</sup>.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Type</th>
+                <th class="num">Params</th>
+                <th class="num">FLOPs</th>
+                <th class="num">Time</th>
+                <th class="num">PSNR</th>
+                <th class="num">SSIM</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>DIRS-YTMT</td>
+                <td>CNN, activation interaction</td>
+                <td class="num">32.42M</td>
+                <td class="num">102.91G</td>
+                <td class="num">31.35 ms</td>
+                <td class="num">24.94</td>
+                <td class="num">0.902</td>
+              </tr>
+              <tr>
+                <td>DIRS-MuGI</td>
+                <td>CNN, mutual gating</td>
+                <td class="num">84.47M</td>
+                <td class="num">153.98G</td>
+                <td class="num">49.95 ms</td>
+                <td class="num">25.63</td>
+                <td class="num">0.913</td>
+              </tr>
+              <tr>
+                <td>DIRS-PAIR</td>
+                <td>Transformer, joint attention</td>
+                <td class="num">48.80M</td>
+                <td class="num">200.22G</td>
+                <td class="num">75.36 ms</td>
+                <td class="num">26.37</td>
+                <td class="num">0.918</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <div class="slider-bar"></div>
-        <div class="slider-handle"></div>
-        <div class="image-label label-left">Input</div>
-        <div class="image-label label-right">Transmission Layer (Our Result)</div>
-      </div>
-      
-      <div class="slider-container" id="slider4" style="margin-top: 20px;">
-        <div class="image-wrapper" style="background-color: #000;">
-          <img src="https://raw.githubusercontent.com/mingcv/DIRS-Assets/main/images/DSC05764/dsit_test_epoch66_real_tj_r.png" class="result-image" alt="Reflection Layer">
-        </div>
-        <div class="slider-bar"></div>
-        <div class="slider-handle"></div>
-        <div class="image-label label-left">Black Background</div>
-        <div class="image-label label-right">Reflection Layer (Our Result)</div>
-      </div>
-      
-      <!-- 示例 3 -->
-      <h3>Example 3</h3>
-      <div class="slider-container" id="slider5">
-        <div class="image-wrapper">
-          <img src="https://raw.githubusercontent.com/mingcv/DIRS-Assets/main/images/DSC05708/m_input.png" alt="Input Image">
-          <img src="https://raw.githubusercontent.com/mingcv/DIRS-Assets/main/images/DSC05708/dsit_test_epoch66_real_tj_l.png" class="result-image" alt="Transmission Layer">
-        </div>
-        <div class="slider-bar"></div>
-        <div class="slider-handle"></div>
-        <div class="image-label label-left">Input</div>
-        <div class="image-label label-right">Transmission Layer (Our Result)</div>
-      </div>
-      
-      <div class="slider-container" id="slider6" style="margin-top: 20px;">
-        <div class="image-wrapper" style="background-color: #000;">
-          <img src="https://raw.githubusercontent.com/mingcv/DIRS-Assets/main/images/DSC05708/dsit_test_epoch66_real_tj_r.png" class="result-image" alt="Reflection Layer">
-        </div>
-        <div class="slider-bar"></div>
-        <div class="slider-handle"></div>
-        <div class="image-label label-left">Black Background</div>
-        <div class="image-label label-right">Reflection Layer (Our Result)</div>
-      </div>
-            
-      <!-- 示例 4 -->
-      <h3>Example 4</h3>
-      <div class="slider-container" id="slider7">
-        <div class="image-wrapper">
-          <img src="https://raw.githubusercontent.com/mingcv/DIRS-Assets/main/images/DSC05745/m_input.png" alt="Input Image">
-          <img src="https://raw.githubusercontent.com/mingcv/DIRS-Assets/main/images/DSC05745/dsit_test_epoch66_real_tj_l.png" class="result-image" alt="Transmission Layer">
-        </div>
-        <div class="slider-bar"></div>
-        <div class="slider-handle"></div>
-        <div class="image-label label-left">Input</div>
-        <div class="image-label label-right">Transmission Layer (Our Result)</div>
-      </div>
-      
-      <div class="slider-container" id="slider8" style="margin-top: 20px;">
-        <div class="image-wrapper" style="background-color: #000;">
-          <img src="https://raw.githubusercontent.com/mingcv/DIRS-Assets/main/images/DSC05745/dsit_test_epoch66_real_tj_r.png" class="result-image" alt="Reflection Layer">
-        </div>
-        <div class="slider-bar"></div>
-        <div class="slider-handle"></div>
-        <div class="image-label label-left">Black Background</div>
-        <div class="image-label label-right">Reflection Layer (Our Result)</div>
-      </div>
-            
+      </section>
 
-          
+      <section id="results">
+        <h2>Visual Results</h2>
+        <figure class="figure clean">
+          <img src="images/fig_realworld.jpg" alt="Real-world reflection separation comparison">
+          <figcaption class="caption">Transmission predictions in challenging real-world scenarios.</figcaption>
+        </figure>
+        <figure class="figure clean">
+          <img src="images/fig_refscene.jpg" alt="Reflection scene reconstruction">
+          <figcaption class="caption">Reflection separation and reflection scene reconstruction.</figcaption>
+        </figure>
+        <figure class="figure clean">
+          <img src="images/fig_polar.jpg" alt="Polarized reflection separation">
+          <figcaption class="caption">DIRS adapted to polarized multi-image reflection separation.</figcaption>
+        </figure>
+      </section>
 
-    </section>
+      <section id="survey">
+        <h2>Survey Roadmaps</h2>
+        <p class="section-lead">
+          The paper also organizes decades of reflection removal and separation methods by
+          input modality, physical cue, prior constraint, and network paradigm.
+        </p>
+        <h3>Single-Image Reflection Removal / Separation</h3>
+        <iframe class="survey-frame survey-frame-main" src="survey/index.html?roadmap=single" title="Interactive survey roadmap of single-image reflection removal methods"></iframe>
+        <h3>Multiple-Image Reflection Removal / Separation</h3>
+        <iframe class="survey-frame survey-frame-supplementary" src="survey/index.html?roadmap=multiple" title="Interactive supplementary survey roadmap of multiple-image reflection removal methods"></iframe>
+      </section>
 
-<!--     <section id="citation">
-      <h2>Citation</h2>
-      <div class="bibtex">
-        @inproceedings{mingcv2024dirs, <br>
-          title={Principled Reflection Separation via Nonlinear Superposition and Feature Interaction}, <br>
-          author={Mingcv and Author, Two and Author, Three}, <br>
-          booktitle={Conference on Computer Vision and Pattern Recognition (CVPR)}, <br>
-          year={2024} <br>
-        }
-      </div>
-    </section> -->
-  </div>
+      <section id="demo">
+        <h2>Interactive Examples</h2>
+        <p class="section-lead">
+          Drag the divider to inspect the input image against the predicted transmission
+          layer, and the reflection layer against a black background.
+        </p>
+
+        <div class="demo-grid">
+          <article>
+            <h3>Example 1</h3>
+            <div class="slider-pair">
+              <div class="slider-container" id="slider1">
+                <div class="image-wrapper">
+                  <img src="images/DSC05593/m_input.png" alt="Input image example 1">
+                  <img src="images/DSC05593/dsit_test_epoch66_real_tj_l.png" class="result-image" alt="Transmission layer example 1">
+                </div>
+                <div class="slider-bar"></div>
+                <div class="slider-handle"></div>
+                <div class="image-label label-left">Input</div>
+                <div class="image-label label-right">Transmission</div>
+              </div>
+              <div class="slider-container" id="slider2">
+                <div class="image-wrapper">
+                  <img src="images/DSC05593/dsit_test_epoch66_real_tj_r.png" class="result-image" alt="Reflection layer example 1">
+                </div>
+                <div class="slider-bar"></div>
+                <div class="slider-handle"></div>
+                <div class="image-label label-left">Black</div>
+                <div class="image-label label-right">Reflection</div>
+              </div>
+            </div>
+          </article>
+
+          <article>
+            <h3>Example 2</h3>
+            <div class="slider-pair">
+              <div class="slider-container" id="slider3">
+                <div class="image-wrapper">
+                  <img src="images/DSC05764/m_input.png" alt="Input image example 2">
+                  <img src="images/DSC05764/dsit_test_epoch66_real_tj_l.png" class="result-image" alt="Transmission layer example 2">
+                </div>
+                <div class="slider-bar"></div>
+                <div class="slider-handle"></div>
+                <div class="image-label label-left">Input</div>
+                <div class="image-label label-right">Transmission</div>
+              </div>
+              <div class="slider-container" id="slider4">
+                <div class="image-wrapper">
+                  <img src="images/DSC05764/dsit_test_epoch66_real_tj_r.png" class="result-image" alt="Reflection layer example 2">
+                </div>
+                <div class="slider-bar"></div>
+                <div class="slider-handle"></div>
+                <div class="image-label label-left">Black</div>
+                <div class="image-label label-right">Reflection</div>
+              </div>
+            </div>
+          </article>
+
+          <article>
+            <h3>Example 3</h3>
+            <div class="slider-pair">
+              <div class="slider-container" id="slider5">
+                <div class="image-wrapper">
+                  <img src="images/DSC05708/m_input.png" alt="Input image example 3">
+                  <img src="images/DSC05708/dsit_test_epoch66_real_tj_l.png" class="result-image" alt="Transmission layer example 3">
+                </div>
+                <div class="slider-bar"></div>
+                <div class="slider-handle"></div>
+                <div class="image-label label-left">Input</div>
+                <div class="image-label label-right">Transmission</div>
+              </div>
+              <div class="slider-container" id="slider6">
+                <div class="image-wrapper">
+                  <img src="images/DSC05708/dsit_test_epoch66_real_tj_r.png" class="result-image" alt="Reflection layer example 3">
+                </div>
+                <div class="slider-bar"></div>
+                <div class="slider-handle"></div>
+                <div class="image-label label-left">Black</div>
+                <div class="image-label label-right">Reflection</div>
+              </div>
+            </div>
+          </article>
+
+          <article>
+            <h3>Example 4</h3>
+            <div class="slider-pair">
+              <div class="slider-container" id="slider7">
+                <div class="image-wrapper">
+                  <img src="images/DSC05745/m_input.png" alt="Input image example 4">
+                  <img src="images/DSC05745/dsit_test_epoch66_real_tj_l.png" class="result-image" alt="Transmission layer example 4">
+                </div>
+                <div class="slider-bar"></div>
+                <div class="slider-handle"></div>
+                <div class="image-label label-left">Input</div>
+                <div class="image-label label-right">Transmission</div>
+              </div>
+              <div class="slider-container" id="slider8">
+                <div class="image-wrapper">
+                  <img src="images/DSC05745/dsit_test_epoch66_real_tj_r.png" class="result-image" alt="Reflection layer example 4">
+                </div>
+                <div class="slider-bar"></div>
+                <div class="slider-handle"></div>
+                <div class="image-label label-left">Black</div>
+                <div class="image-label label-right">Reflection</div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="citation">
+        <h2>Citation</h2>
+        <pre class="bibtex">@article{hu2026dirs,
+  title={Principled Reflection Separation via Nonlinear Superposition and Feature Interaction},
+  author={Hu, Qiming and Li, Mingjia and Li, Yuntong and Guo, Xiaojie},
+  journal={arXiv preprint},
+  year={2026}
+}</pre>
+      </section>
+
+      <footer>
+        DIRS project page. Code, checkpoints, and data are released for research use.
+      </footer>
+    </div>
+  </main>
 
   <script>
-    /**
-     * 初始化一组可同步的滑块对比组件
-     * @param {string[]} containerSelectors - 一组滑块容器的 CSS 选择器 (例如 ['#slider1', '#slider2'])
-     */
+    function updateHeaderFade() {
+      const header = document.getElementById('headerVisual');
+      const progress = Math.max(0, Math.min(window.scrollY / window.innerHeight, 1));
+      header.style.opacity = String(1 - progress);
+    }
+
     function initSyncedSliders(containerSelectors) {
-      const containers = containerSelectors.map(selector => document.querySelector(selector)).filter(el => el);
+      const containers = containerSelectors.map(selector => document.querySelector(selector)).filter(Boolean);
       if (containers.length === 0) return;
 
       const bars = containers.map(c => c.querySelector('.slider-bar'));
       const handles = containers.map(c => c.querySelector('.slider-handle'));
       const resultImgs = containers.map(c => c.querySelector('.result-image'));
-      
       let dragging = false;
 
       function update(x) {
@@ -378,11 +733,11 @@
         const position = Math.max(0, Math.min(x - rect.left, rect.width));
         const pct = (position / rect.width) * 100;
 
-        for (let i = 0; i < containers.length; i++) {
+        containers.forEach((_, i) => {
           bars[i].style.left = `${pct}%`;
           handles[i].style.left = `${pct}%`;
           resultImgs[i].style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
-        }
+        });
       }
 
       const startDrag = (e) => {
@@ -390,7 +745,7 @@
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
         update(clientX);
       };
-      
+
       const stopDrag = () => {
         dragging = false;
       };
@@ -414,11 +769,15 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      updateHeaderFade();
       initSyncedSliders(['#slider1', '#slider2']);
       initSyncedSliders(['#slider3', '#slider4']);
       initSyncedSliders(['#slider5', '#slider6']);
       initSyncedSliders(['#slider7', '#slider8']);
     });
+
+    window.addEventListener('scroll', updateHeaderFade, { passive: true });
+    window.addEventListener('resize', updateHeaderFade);
   </script>
 </body>
 </html>
