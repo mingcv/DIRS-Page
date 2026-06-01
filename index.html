@@ -47,8 +47,21 @@
       position: fixed;
       inset: 0;
       z-index: 0;
-      background: #05070b url("images/header.png") top center / contain no-repeat;
+      overflow: hidden;
+      background: #05070b;
+      opacity: 1;
       pointer-events: none;
+      transition: opacity 220ms linear;
+    }
+
+    .ambient-bg img {
+      display: block;
+      width: 100vw;
+      max-width: none;
+      height: auto;
+      transform: translate3d(0, var(--ambient-y, 0px), 0);
+      transform-origin: top center;
+      will-change: transform;
     }
 
     .hero {
@@ -60,13 +73,26 @@
     }
 
     .hero-shade {
-      position: absolute;
-      inset: 0;
+      position: fixed;
+      top: -32px;
+      left: 0;
+      right: 0;
+      height: calc(100dvh + 64px);
+      min-height: calc(100vh + 64px);
       z-index: 1;
       background:
         radial-gradient(circle at 24% 18%, rgba(31,111,235,0.34), transparent 34%),
         radial-gradient(circle at 84% 26%, rgba(208,107,34,0.28), transparent 30%),
         linear-gradient(180deg, rgba(3,7,18,0.42), rgba(3,7,18,0.60) 58%, rgba(3,7,18,0.70));
+      pointer-events: none;
+      transition:
+        opacity 780ms cubic-bezier(.22,.61,.36,1),
+        filter 780ms cubic-bezier(.22,.61,.36,1);
+    }
+
+    body.immersive .hero-shade {
+      opacity: 0;
+      filter: blur(12px);
     }
 
     .hero::after {
@@ -79,6 +105,11 @@
       z-index: 2;
       background: linear-gradient(180deg, rgba(255,255,255,0), var(--paper));
       pointer-events: none;
+      transition: opacity 780ms cubic-bezier(.22,.61,.36,1);
+    }
+
+    body.immersive .hero::after {
+      opacity: 0;
     }
 
     .hero-shell {
@@ -167,14 +198,16 @@
     }
 
     .side-nav a {
-      display: grid;
-      place-items: center;
-      width: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      min-width: 104px;
       height: 38px;
+      padding: 0 13px;
       border-radius: 12px;
       color: rgba(255,255,255,0.88);
       background: rgba(255,255,255,0.08);
-      font-size: 0.78rem;
+      font-size: 0.82rem;
       font-weight: 800;
       text-decoration: none;
       transition: background 180ms ease, color 180ms ease, transform 180ms ease;
@@ -528,7 +561,7 @@
     .roadmap-card.fullscreen {
       position: fixed;
       inset: 18px;
-      z-index: 120;
+      z-index: 160;
       display: flex;
       flex-direction: column;
       border-radius: 18px;
@@ -549,7 +582,7 @@
       content: "";
       position: fixed;
       inset: 0;
-      z-index: 90;
+      z-index: 120;
       background: rgba(3, 7, 18, 0.58);
       backdrop-filter: blur(10px);
     }
@@ -728,7 +761,14 @@
         top: auto;
         bottom: 12px;
         flex-direction: row;
+        max-width: calc(100% - 24px);
+        overflow-x: auto;
         transform: translateX(-50%);
+      }
+
+      .side-nav a {
+        min-width: auto;
+        white-space: nowrap;
       }
 
       body.immersive .side-nav {
@@ -738,18 +778,21 @@
   </style>
 </head>
 <body>
-  <div class="ambient-bg" aria-hidden="true"></div>
+  <div class="ambient-bg" aria-hidden="true">
+    <img src="images/header.png" alt="">
+  </div>
+  <div class="hero-shade" aria-hidden="true"></div>
   <nav class="side-nav content-layer" aria-label="Section navigation">
-    <a href="#hero" data-section="hero" title="Home">H</a>
-    <a href="#abstract" data-section="abstract" title="Abstract">A</a>
-    <a href="#method" data-section="method" title="Method">M</a>
-    <a href="#models" data-section="models" title="Models">Z</a>
-    <a href="#results" data-section="results" title="Results">R</a>
-    <a href="#survey" data-section="survey" title="Survey">S</a>
-    <a href="#demo" data-section="demo" title="Demo">D</a>
+    <a href="#hero" data-section="hero" title="Home">Home</a>
+    <a href="#abstract" data-section="abstract" title="Abstract">Abstract</a>
+    <a href="#method" data-section="method" title="Method">Method</a>
+    <a href="#models" data-section="models" title="Models">Models</a>
+    <a href="#results" data-section="results" title="Results">Results</a>
+    <a href="#survey" data-section="survey" title="Survey">Survey</a>
+    <a href="#demo" data-section="demo" title="Demo">Demo</a>
+    <a href="#citation" data-section="citation" title="Citation">Citation</a>
   </nav>
   <section id="hero" class="hero">
-    <div class="hero-shade" aria-hidden="true"></div>
     <div class="hero-shell content-layer">
       <header class="hero-panel">
         <p class="kicker">Official Project Page</p>
@@ -1099,8 +1142,33 @@
   <div class="background-toggle-hint">Click the background to bring the page back</div>
 
   <script>
+    let backgroundHiddenByScroll = false;
+
+    function updateAmbientBackground() {
+      const ambient = document.querySelector('.ambient-bg');
+      const image = ambient?.querySelector('img');
+      if (!ambient || !image) return;
+
+      const imageHeight = image.getBoundingClientRect().height;
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      const scrollableImage = Math.max(0, imageHeight - viewportHeight);
+      const y = Math.min(window.scrollY, scrollableImage);
+      const fadeDistance = Math.max(240, Math.min(viewportHeight * 0.75, 720));
+      const fadeProgress = Math.min(1, Math.max(0, (window.scrollY - scrollableImage) / fadeDistance));
+      const opacity = 1 - fadeProgress;
+
+      ambient.style.setProperty('--ambient-y', `${-y}px`);
+      ambient.style.opacity = opacity.toFixed(3);
+      backgroundHiddenByScroll = opacity <= 0.02;
+
+      if (backgroundHiddenByScroll && document.body.classList.contains('immersive')) {
+        document.body.classList.remove('immersive');
+      }
+    }
+
     function clickedBackground(event) {
       if (document.body.classList.contains('roadmap-open')) return false;
+      if (backgroundHiddenByScroll) return false;
       if (event.target.closest('a, button, iframe, .side-nav, .roadmap-card, .slider-container')) return false;
       if (document.body.classList.contains('immersive')) return true;
       const pageContent = event.target.closest('.content-layer');
@@ -1113,6 +1181,13 @@
     }
 
     function initBackgroundToggle() {
+      const ambientImage = document.querySelector('.ambient-bg img');
+      if (ambientImage) {
+        ambientImage.addEventListener('load', updateAmbientBackground, { once: true });
+      }
+      updateAmbientBackground();
+      window.addEventListener('scroll', updateAmbientBackground, { passive: true });
+      window.addEventListener('resize', updateAmbientBackground);
       document.addEventListener('click', (event) => {
         if (!clickedBackground(event)) return;
         document.body.classList.toggle('immersive');
@@ -1123,10 +1198,20 @@
       document.querySelectorAll('.roadmap-card').forEach(card => {
         const button = card.querySelector('.roadmap-maximize');
         if (!button) return;
+        const placeholder = document.createComment('roadmap-card-placeholder');
 
         button.addEventListener('click', (event) => {
           event.stopPropagation();
-          const open = card.classList.toggle('fullscreen');
+          const open = !card.classList.contains('fullscreen');
+          if (open) {
+            card.parentNode.insertBefore(placeholder, card);
+            document.body.appendChild(card);
+            card.classList.add('fullscreen');
+          } else {
+            placeholder.parentNode.insertBefore(card, placeholder);
+            placeholder.remove();
+            card.classList.remove('fullscreen');
+          }
           document.body.classList.toggle('roadmap-open', open);
           button.textContent = open ? 'Exit' : 'Maximize';
         });
@@ -1136,10 +1221,8 @@
         if (event.key !== 'Escape') return;
         const open = document.querySelector('.roadmap-card.fullscreen');
         if (!open) return;
-        open.classList.remove('fullscreen');
         const button = open.querySelector('.roadmap-maximize');
-        if (button) button.textContent = 'Maximize';
-        document.body.classList.remove('roadmap-open');
+        if (button) button.click();
       });
     }
 
