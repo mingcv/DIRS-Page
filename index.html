@@ -604,7 +604,7 @@
       height: 1200px;
     }
 
-    .demo-grid {
+    .examples-grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 30px;
@@ -626,6 +626,15 @@
       background: #000;
       box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
       backdrop-filter: blur(14px);
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body.dragging-slider,
+    body.dragging-slider * {
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     .image-wrapper {
@@ -640,6 +649,8 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      pointer-events: none;
+      -webkit-user-drag: none;
     }
 
     .result-image {
@@ -792,9 +803,9 @@
     <a href="#abstract" data-section="abstract" title="Abstract">Abstract</a>
     <a href="#method" data-section="method" title="Method">Method</a>
     <a href="#models" data-section="models" title="Models">Models</a>
-    <a href="#results" data-section="results" title="Results">Results</a>
     <a href="#survey" data-section="survey" title="Survey">Survey</a>
-    <a href="#demo" data-section="demo" title="Demo">Demo</a>
+    <a href="#results" data-section="results" title="Results">Results</a>
+    <a href="#examples" data-section="examples" title="Examples">Examples</a>
     <a href="#citation" data-section="citation" title="Citation">Citation</a>
   </nav>
   <div id="hero" class="hero">
@@ -822,7 +833,7 @@
           <a href="https://github.com/mingcv/DIRS" target="_blank" rel="noreferrer">Code</a>
           <a href="https://huggingface.co/huqiming513/DIRS-Models" target="_blank" rel="noreferrer">Models & Data</a>
           <a href="#survey">Survey</a>
-          <a href="#demo">Interactive Demo</a>
+          <a href="#examples">Examples</a>
         </nav>
       </header>
     </div>
@@ -960,31 +971,6 @@
         </div>
       </section>
 
-      <section id="results">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Results</p>
-            <h2>Visual Results</h2>
-          </div>
-          <p class="section-lead">
-            DIRS separates strong real-world reflections and extends naturally to reflection
-            scene reconstruction and polarized image reflection separation.
-          </p>
-        </div>
-        <figure class="figure clean">
-          <img src="images/fig_realworld.jpg" alt="Real-world reflection separation comparison">
-          <figcaption class="caption">Transmission predictions in challenging real-world scenarios.</figcaption>
-        </figure>
-        <figure class="figure clean">
-          <img src="images/fig_refscene.jpg" alt="Reflection scene reconstruction">
-          <figcaption class="caption">Reflection separation and reflection scene reconstruction.</figcaption>
-        </figure>
-        <figure class="figure clean">
-          <img src="images/fig_polar.jpg" alt="Polarized reflection separation">
-          <figcaption class="caption">DIRS adapted to polarized multi-image reflection separation.</figcaption>
-        </figure>
-      </section>
-
       <section id="survey">
         <div class="section-head">
           <div>
@@ -1012,10 +998,35 @@
         </div>
       </section>
 
-      <section id="demo">
+      <section id="results">
         <div class="section-head">
           <div>
-            <p class="eyebrow">Demo</p>
+            <p class="eyebrow">Results</p>
+            <h2>Visual Results</h2>
+          </div>
+          <p class="section-lead">
+            DIRS separates strong real-world reflections and extends naturally to reflection
+            scene reconstruction and polarized image reflection separation.
+          </p>
+        </div>
+        <figure class="figure clean">
+          <img src="images/fig_realworld.jpg" alt="Real-world reflection separation comparison">
+          <figcaption class="caption">Transmission predictions in challenging real-world scenarios.</figcaption>
+        </figure>
+        <figure class="figure clean">
+          <img src="images/fig_refscene.jpg" alt="Reflection scene reconstruction">
+          <figcaption class="caption">Reflection separation and reflection scene reconstruction.</figcaption>
+        </figure>
+        <figure class="figure clean">
+          <img src="images/fig_polar.jpg" alt="Polarized reflection separation">
+          <figcaption class="caption">DIRS adapted to polarized multi-image reflection separation.</figcaption>
+        </figure>
+      </section>
+
+      <section id="examples">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Examples</p>
             <h2>Interactive Examples</h2>
           </div>
           <p class="section-lead">
@@ -1024,7 +1035,7 @@
           </p>
         </div>
 
-        <div class="demo-grid">
+        <div class="examples-grid">
           <article>
             <h3>Example 1</h3>
             <div class="slider-pair">
@@ -1265,43 +1276,45 @@
       window.addEventListener('resize', updateActive);
     }
 
-    function initSyncedSliders(containerSelectors) {
-      const containers = containerSelectors.map(selector => document.querySelector(selector)).filter(Boolean);
-      if (containers.length === 0) return;
+    function initExampleSliders() {
+      const containers = Array.from(document.querySelectorAll('.slider-container'));
+      let active = null;
 
-      const bars = containers.map(c => c.querySelector('.slider-bar'));
-      const handles = containers.map(c => c.querySelector('.slider-handle'));
-      const resultImgs = containers.map(c => c.querySelector('.result-image'));
-      let dragging = false;
-
-      function update(x) {
-        const rect = containers[0].getBoundingClientRect();
+      function update(container, x) {
+        const bar = container.querySelector('.slider-bar');
+        const handle = container.querySelector('.slider-handle');
+        const resultImg = container.querySelector('.result-image');
+        if (!bar || !handle || !resultImg) return;
+        const rect = container.getBoundingClientRect();
         const position = Math.max(0, Math.min(x - rect.left, rect.width));
         const pct = (position / rect.width) * 100;
 
-        containers.forEach((_, i) => {
-          bars[i].style.left = `${pct}%`;
-          handles[i].style.left = `${pct}%`;
-          resultImgs[i].style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
-        });
+        bar.style.left = `${pct}%`;
+        handle.style.left = `${pct}%`;
+        resultImg.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
       }
 
-      const startDrag = (e) => {
-        dragging = true;
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        update(clientX);
-      };
+      function clientX(event) {
+        return event.touches ? event.touches[0].clientX : event.clientX;
+      }
 
-      const stopDrag = () => {
-        dragging = false;
-      };
+      function startDrag(event) {
+        event.preventDefault();
+        active = event.currentTarget;
+        document.body.classList.add('dragging-slider');
+        update(active, clientX(event));
+      }
 
-      const onDrag = (e) => {
-        if (!dragging) return;
-        if (e.touches) e.preventDefault();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        update(clientX);
-      };
+      function stopDrag() {
+        active = null;
+        document.body.classList.remove('dragging-slider');
+      }
+
+      function onDrag(event) {
+        if (!active) return;
+        event.preventDefault();
+        update(active, clientX(event));
+      }
 
       containers.forEach(container => {
         container.addEventListener('mousedown', startDrag);
@@ -1318,10 +1331,7 @@
       initBackgroundToggle();
       initRoadmapMaximize();
       initSideNav();
-      initSyncedSliders(['#slider1', '#slider2']);
-      initSyncedSliders(['#slider3', '#slider4']);
-      initSyncedSliders(['#slider5', '#slider6']);
-      initSyncedSliders(['#slider7', '#slider8']);
+      initExampleSliders();
     });
   </script>
 </body>
