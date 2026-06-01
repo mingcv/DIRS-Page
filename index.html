@@ -23,13 +23,13 @@
 
     html {
       scroll-behavior: smooth;
-      background: #05070b;
+      background: var(--paper);
     }
 
     body {
       margin: 0;
       color: var(--ink);
-      background: #05070b;
+      background: var(--paper);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       line-height: 1.65;
     }
@@ -44,33 +44,31 @@
     }
 
     .ambient-bg {
-      position: fixed;
+      position: absolute;
       inset: 0;
       z-index: 0;
       overflow: hidden;
-      background: #05070b;
+      background: var(--paper);
       opacity: 1;
       pointer-events: none;
       transition: opacity 220ms linear;
     }
 
     .ambient-bg img {
+      position: relative;
+      z-index: 0;
       display: block;
       width: 100vw;
       max-width: none;
       height: auto;
-      transform: translate3d(0, var(--ambient-y, 0px), 0);
-      transform-origin: top center;
-      will-change: transform;
     }
 
     .hero-shade {
       position: absolute;
-      top: -32px;
+      top: 0;
       left: 0;
       right: 0;
-      height: calc(100dvh + 64px);
-      min-height: calc(100vh + 64px);
+      height: var(--ambient-image-height, 100%);
       z-index: 1;
       background:
         radial-gradient(circle at 24% 18%, rgba(31,111,235,0.34), transparent 34%),
@@ -89,9 +87,9 @@
 
     .hero {
       position: relative;
-      min-height: 100vh;
-      overflow: hidden;
-      background: transparent;
+      min-height: var(--hero-scroll-height, 100vh);
+      overflow: visible;
+      background: var(--paper);
       isolation: isolate;
     }
 
@@ -113,14 +111,17 @@
     }
 
     .hero-shell {
-      position: relative;
+      position: sticky;
+      top: 0;
       z-index: 3;
       width: min(1180px, calc(100% - 40px));
+      height: 100vh;
       min-height: 100vh;
       margin: 0 auto;
       display: grid;
       align-items: center;
       padding: 72px 0 96px;
+      pointer-events: none;
     }
 
     .hero-panel {
@@ -132,6 +133,7 @@
       background: rgba(6, 11, 24, 0.34);
       box-shadow: 0 24px 80px rgba(0, 0, 0, 0.24);
       backdrop-filter: blur(10px);
+      pointer-events: auto;
     }
 
     .content-layer {
@@ -142,6 +144,12 @@
         transform 780ms cubic-bezier(.22,.61,.36,1),
         filter 780ms cubic-bezier(.22,.61,.36,1);
       will-change: opacity, transform, filter;
+    }
+
+    .hero-shell.content-layer {
+      position: sticky;
+      top: 0;
+      z-index: 3;
     }
 
     body.immersive .content-layer {
@@ -778,10 +786,6 @@
   </style>
 </head>
 <body>
-  <div class="ambient-bg" aria-hidden="true">
-    <img src="images/header.png" alt="">
-    <div class="hero-shade" aria-hidden="true"></div>
-  </div>
   <nav class="side-nav content-layer" aria-label="Section navigation">
     <a href="#hero" data-section="hero" title="Home">Home</a>
     <a href="#abstract" data-section="abstract" title="Abstract">Abstract</a>
@@ -793,6 +797,10 @@
     <a href="#citation" data-section="citation" title="Citation">Citation</a>
   </nav>
   <div id="hero" class="hero">
+    <div class="ambient-bg" aria-hidden="true">
+      <img src="images/header.png" alt="">
+      <div class="hero-shade" aria-hidden="true"></div>
+    </div>
     <div class="hero-shell content-layer">
       <header class="hero-panel">
         <p class="kicker">Official Project Page</p>
@@ -1147,17 +1155,24 @@
     function updateAmbientBackground() {
       const ambient = document.querySelector('.ambient-bg');
       const image = ambient?.querySelector('img');
-      if (!ambient || !image) return;
+      const hero = document.getElementById('hero');
+      if (!ambient || !image || !hero) return;
 
-      const imageHeight = image.getBoundingClientRect().height;
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-      const scrollableImage = Math.max(0, imageHeight - viewportHeight);
-      const y = Math.min(window.scrollY, scrollableImage);
-      const fadeDistance = Math.max(240, Math.min(viewportHeight * 0.75, 720));
-      const fadeProgress = Math.min(1, Math.max(0, (window.scrollY - scrollableImage) / fadeDistance));
+      const imageHeight = image.getBoundingClientRect().height;
+      const fadeDistance = Math.max(180, Math.min(viewportHeight * 0.45, 420));
+      const heroTop = hero.offsetTop;
+      const heroHeight = hero.offsetHeight;
+      const desiredHeroHeight = Math.max(viewportHeight, imageHeight + fadeDistance);
+      ambient.style.setProperty('--ambient-image-height', `${Math.ceil(imageHeight)}px`);
+      if (Math.abs(heroHeight - desiredHeroHeight) > 1) {
+        hero.style.setProperty('--hero-scroll-height', `${Math.ceil(desiredHeroHeight)}px`);
+      }
+      const currentHeroHeight = Math.max(hero.offsetHeight, desiredHeroHeight);
+      const fadeStart = Math.max(0, heroTop + currentHeroHeight - viewportHeight - fadeDistance);
+      const fadeProgress = Math.min(1, Math.max(0, (window.scrollY - fadeStart) / fadeDistance));
       const opacity = 1 - fadeProgress;
 
-      ambient.style.setProperty('--ambient-y', `${-y}px`);
       ambient.style.opacity = opacity.toFixed(3);
       backgroundHiddenByScroll = opacity <= 0.02;
 
