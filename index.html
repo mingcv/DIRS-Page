@@ -72,20 +72,6 @@
       isolation: isolate;
     }
 
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      background: rgba(6, 11, 24, 0.34);
-      backdrop-filter: blur(10px) saturate(1.05);
-      -webkit-backdrop-filter: blur(10px) saturate(1.05);
-      pointer-events: none;
-      transition:
-        opacity 780ms cubic-bezier(.22,.61,.36,1),
-        filter 780ms cubic-bezier(.22,.61,.36,1);
-    }
-
     .hero-shade {
       position: fixed;
       top: -32px;
@@ -109,11 +95,6 @@
       filter: blur(12px);
     }
 
-    body.immersive .hero::before {
-      opacity: 0;
-      filter: blur(12px);
-    }
-
     .hero::after {
       content: "";
       position: absolute;
@@ -121,7 +102,7 @@
       right: 0;
       bottom: 0;
       height: min(28vh, 260px);
-      z-index: 3;
+      z-index: 2;
       background: linear-gradient(180deg, rgba(255,255,255,0), var(--paper));
       pointer-events: none;
       transition: opacity 780ms cubic-bezier(.22,.61,.36,1);
@@ -133,32 +114,24 @@
 
     .hero-shell {
       position: relative;
-      z-index: 4;
-      width: 100%;
+      z-index: 3;
+      width: min(1180px, calc(100% - 40px));
       min-height: 100vh;
-      margin: 0;
-      display: block;
-      padding: 0;
+      margin: 0 auto;
+      display: grid;
+      align-items: center;
+      padding: 72px 0 96px;
     }
 
     .hero-panel {
-      width: 100%;
-      min-height: 100vh;
-      max-width: none;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: clamp(88px, 12vh, 132px) max(32px, calc((100vw - 1180px) / 2 + 40px)) 118px;
-      border: 0;
-      border-radius: 0;
+      max-width: 980px;
+      padding: clamp(24px, 5vw, 54px);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 18px;
       color: #fff;
-      background: transparent;
-      box-shadow: none;
-      backdrop-filter: none;
-    }
-
-    .hero-panel > * {
-      width: min(980px, 100%);
+      background: rgba(6, 11, 24, 0.34);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.24);
+      backdrop-filter: blur(10px);
     }
 
     .content-layer {
@@ -757,12 +730,13 @@
     }
 
     @media (max-width: 900px) {
+      .hero-shell,
       .container {
         width: min(100% - 28px, 1180px);
       }
 
       .hero-panel {
-        padding: 82px 22px 104px;
+        border-radius: 14px;
       }
 
       .section-head,
