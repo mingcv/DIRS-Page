@@ -64,16 +64,8 @@
       will-change: transform;
     }
 
-    .hero {
-      position: relative;
-      min-height: 100vh;
-      overflow: hidden;
-      background: transparent;
-      isolation: isolate;
-    }
-
     .hero-shade {
-      position: fixed;
+      position: absolute;
       top: -32px;
       left: 0;
       right: 0;
@@ -93,6 +85,14 @@
     body.immersive .hero-shade {
       opacity: 0;
       filter: blur(12px);
+    }
+
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+      background: transparent;
+      isolation: isolate;
     }
 
     .hero::after {
@@ -780,8 +780,8 @@
 <body>
   <div class="ambient-bg" aria-hidden="true">
     <img src="images/header.png" alt="">
+    <div class="hero-shade" aria-hidden="true"></div>
   </div>
-  <div class="hero-shade" aria-hidden="true"></div>
   <nav class="side-nav content-layer" aria-label="Section navigation">
     <a href="#hero" data-section="hero" title="Home">Home</a>
     <a href="#abstract" data-section="abstract" title="Abstract">Abstract</a>
