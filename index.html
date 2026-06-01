@@ -29,7 +29,7 @@
     body {
       margin: 0;
       color: var(--ink);
-      background: var(--paper);
+      background: #05070b;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       line-height: 1.65;
     }
@@ -43,24 +43,20 @@
       text-decoration: underline;
     }
 
+    .ambient-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: #05070b url("images/header.png") top center / contain no-repeat;
+      pointer-events: none;
+    }
+
     .hero {
       position: relative;
       min-height: 100vh;
       overflow: hidden;
-      background: #05070b;
+      background: transparent;
       isolation: isolate;
-    }
-
-    .hero-bg {
-      position: absolute;
-      inset: 0 auto auto 0;
-      z-index: 0;
-      width: 100%;
-      height: auto;
-      min-height: 100vh;
-      object-fit: contain;
-      object-position: top center;
-      display: block;
     }
 
     .hero-shade {
@@ -108,6 +104,8 @@
     }
 
     .content-layer {
+      position: relative;
+      z-index: 2;
       transition:
         opacity 780ms cubic-bezier(.22,.61,.36,1),
         transform 780ms cubic-bezier(.22,.61,.36,1),
@@ -142,6 +140,52 @@
     body.immersive .background-toggle-hint {
       opacity: 1;
       transform: translate(-50%, 0);
+    }
+
+    .side-nav {
+      position: fixed;
+      left: 18px;
+      top: 50%;
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 10px;
+      border: 1px solid rgba(255,255,255,0.26);
+      border-radius: 18px;
+      background: rgba(7, 12, 26, 0.42);
+      box-shadow: 0 18px 46px rgba(0,0,0,0.18);
+      backdrop-filter: blur(16px) saturate(1.1);
+      transform: translateY(-50%);
+      transition: opacity 520ms ease, transform 520ms ease;
+    }
+
+    body.immersive .side-nav {
+      opacity: 0;
+      transform: translate(-18px, -50%);
+      pointer-events: none;
+    }
+
+    .side-nav a {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      color: rgba(255,255,255,0.88);
+      background: rgba(255,255,255,0.08);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-decoration: none;
+      transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+    }
+
+    .side-nav a:hover,
+    .side-nav a.active {
+      color: #0a1631;
+      background: rgba(255,255,255,0.92);
+      transform: translateX(2px);
+      text-decoration: none;
     }
 
     .kicker {
@@ -428,11 +472,86 @@
     .survey-frame {
       width: 100%;
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: 0 0 12px 12px;
       background: rgba(255,255,255,0.74);
       display: block;
       box-shadow: 0 14px 36px rgba(15, 23, 42, 0.06);
       backdrop-filter: blur(14px);
+    }
+
+    .roadmap-card {
+      position: relative;
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.72);
+      box-shadow: 0 14px 36px rgba(15, 23, 42, 0.06);
+      backdrop-filter: blur(14px);
+    }
+
+    .roadmap-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,0.66);
+    }
+
+    .roadmap-title {
+      color: #263041;
+      font-weight: 760;
+    }
+
+    .roadmap-maximize {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      padding: 0 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 999px;
+      color: #172033;
+      background: rgba(255,255,255,0.86);
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.88rem;
+      font-weight: 760;
+    }
+
+    .roadmap-maximize:hover {
+      background: #fff;
+    }
+
+    .roadmap-card.fullscreen {
+      position: fixed;
+      inset: 18px;
+      z-index: 120;
+      display: flex;
+      flex-direction: column;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.94);
+    }
+
+    .roadmap-card.fullscreen .survey-frame {
+      flex: 1;
+      height: auto;
+      min-height: 0;
+    }
+
+    body.roadmap-open {
+      overflow: hidden;
+    }
+
+    body.roadmap-open::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      background: rgba(3, 7, 18, 0.58);
+      backdrop-filter: blur(10px);
     }
 
     .survey-frame-main {
@@ -603,12 +722,33 @@
       .survey-frame-supplementary {
         height: 900px;
       }
+
+      .side-nav {
+        left: 50%;
+        top: auto;
+        bottom: 12px;
+        flex-direction: row;
+        transform: translateX(-50%);
+      }
+
+      body.immersive .side-nav {
+        transform: translate(-50%, 18px);
+      }
     }
   </style>
 </head>
 <body>
+  <div class="ambient-bg" aria-hidden="true"></div>
+  <nav class="side-nav content-layer" aria-label="Section navigation">
+    <a href="#hero" data-section="hero" title="Home">H</a>
+    <a href="#abstract" data-section="abstract" title="Abstract">A</a>
+    <a href="#method" data-section="method" title="Method">M</a>
+    <a href="#models" data-section="models" title="Models">Z</a>
+    <a href="#results" data-section="results" title="Results">R</a>
+    <a href="#survey" data-section="survey" title="Survey">S</a>
+    <a href="#demo" data-section="demo" title="Demo">D</a>
+  </nav>
   <section id="hero" class="hero">
-    <img class="hero-bg" src="images/header.png" alt="">
     <div class="hero-shade" aria-hidden="true"></div>
     <div class="hero-shell content-layer">
       <header class="hero-panel">
@@ -804,10 +944,20 @@
             physical cue, prior constraint, and network paradigm.
           </p>
         </div>
-        <h3>Single-Image Reflection Removal / Separation</h3>
-        <iframe class="survey-frame survey-frame-main" src="survey/index.html?roadmap=single" title="Interactive survey roadmap of single-image reflection removal methods"></iframe>
-        <h3>Multiple-Image Reflection Removal / Separation</h3>
-        <iframe class="survey-frame survey-frame-supplementary" src="survey/index.html?roadmap=multiple" title="Interactive supplementary survey roadmap of multiple-image reflection removal methods"></iframe>
+        <div class="roadmap-card">
+          <div class="roadmap-bar">
+            <span class="roadmap-title">Single-Image Reflection Removal / Separation</span>
+            <button class="roadmap-maximize" type="button">Maximize</button>
+          </div>
+          <iframe class="survey-frame survey-frame-main" src="survey/index.html?roadmap=single" title="Interactive survey roadmap of single-image reflection removal methods"></iframe>
+        </div>
+        <div class="roadmap-card">
+          <div class="roadmap-bar">
+            <span class="roadmap-title">Multiple-Image Reflection Removal / Separation</span>
+            <button class="roadmap-maximize" type="button">Maximize</button>
+          </div>
+          <iframe class="survey-frame survey-frame-supplementary" src="survey/index.html?roadmap=multiple" title="Interactive supplementary survey roadmap of multiple-image reflection removal methods"></iframe>
+        </div>
       </section>
 
       <section id="demo">
@@ -950,6 +1100,8 @@
 
   <script>
     function clickedBackground(event) {
+      if (document.body.classList.contains('roadmap-open')) return false;
+      if (event.target.closest('a, button, iframe, .side-nav, .roadmap-card, .slider-container')) return false;
       if (document.body.classList.contains('immersive')) return true;
       const pageContent = event.target.closest('.content-layer');
       if (!pageContent) return true;
@@ -957,7 +1109,7 @@
       if (!container) return true;
       const rect = container.getBoundingClientRect();
       const gutter = Math.max(0, (window.innerWidth - rect.width) / 2);
-      return event.clientX < gutter || event.clientX > window.innerWidth - gutter;
+      return gutter > 0 && (event.clientX < gutter || event.clientX > window.innerWidth - gutter);
     }
 
     function initBackgroundToggle() {
@@ -965,6 +1117,52 @@
         if (!clickedBackground(event)) return;
         document.body.classList.toggle('immersive');
       });
+    }
+
+    function initRoadmapMaximize() {
+      document.querySelectorAll('.roadmap-card').forEach(card => {
+        const button = card.querySelector('.roadmap-maximize');
+        if (!button) return;
+
+        button.addEventListener('click', (event) => {
+          event.stopPropagation();
+          const open = card.classList.toggle('fullscreen');
+          document.body.classList.toggle('roadmap-open', open);
+          button.textContent = open ? 'Exit' : 'Maximize';
+        });
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') return;
+        const open = document.querySelector('.roadmap-card.fullscreen');
+        if (!open) return;
+        open.classList.remove('fullscreen');
+        const button = open.querySelector('.roadmap-maximize');
+        if (button) button.textContent = 'Maximize';
+        document.body.classList.remove('roadmap-open');
+      });
+    }
+
+    function initSideNav() {
+      const links = Array.from(document.querySelectorAll('.side-nav a'));
+      const sections = links
+        .map(link => document.getElementById(link.dataset.section))
+        .filter(Boolean);
+
+      function updateActive() {
+        const y = window.scrollY + window.innerHeight * 0.38;
+        let active = sections[0]?.id;
+        sections.forEach(section => {
+          if (section.offsetTop <= y) active = section.id;
+        });
+        links.forEach(link => {
+          link.classList.toggle('active', link.dataset.section === active);
+        });
+      }
+
+      updateActive();
+      window.addEventListener('scroll', updateActive, { passive: true });
+      window.addEventListener('resize', updateActive);
     }
 
     function initSyncedSliders(containerSelectors) {
@@ -1018,6 +1216,8 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       initBackgroundToggle();
+      initRoadmapMaximize();
+      initSideNav();
       initSyncedSliders(['#slider1', '#slider2']);
       initSyncedSliders(['#slider3', '#slider4']);
       initSyncedSliders(['#slider5', '#slider6']);
