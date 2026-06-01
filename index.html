@@ -103,6 +103,7 @@
       z-index: 2;
       background: linear-gradient(180deg, rgba(255,255,255,0), var(--paper));
       pointer-events: none;
+      opacity: var(--hero-fade-opacity, 0);
       transition: opacity 780ms cubic-bezier(.22,.61,.36,1);
     }
 
@@ -1163,18 +1164,19 @@
       const fadeDistance = Math.max(180, Math.min(viewportHeight * 0.45, 420));
       const heroTop = hero.offsetTop;
       const heroHeight = hero.offsetHeight;
-      const desiredHeroHeight = Math.max(viewportHeight, imageHeight + fadeDistance);
+      const desiredHeroHeight = Math.max(viewportHeight, imageHeight);
       ambient.style.setProperty('--ambient-image-height', `${Math.ceil(imageHeight)}px`);
       if (Math.abs(heroHeight - desiredHeroHeight) > 1) {
         hero.style.setProperty('--hero-scroll-height', `${Math.ceil(desiredHeroHeight)}px`);
       }
       const currentHeroHeight = Math.max(hero.offsetHeight, desiredHeroHeight);
-      const fadeStart = Math.max(0, heroTop + currentHeroHeight - viewportHeight - fadeDistance);
+      const heroEndScroll = Math.max(0, heroTop + currentHeroHeight - viewportHeight);
+      const fadeStart = Math.max(0, heroEndScroll - fadeDistance);
       const fadeProgress = Math.min(1, Math.max(0, (window.scrollY - fadeStart) / fadeDistance));
-      const opacity = 1 - fadeProgress;
 
-      ambient.style.opacity = opacity.toFixed(3);
-      backgroundHiddenByScroll = opacity <= 0.02;
+      ambient.style.opacity = '1';
+      hero.style.setProperty('--hero-fade-opacity', fadeProgress.toFixed(3));
+      backgroundHiddenByScroll = window.scrollY >= heroEndScroll;
 
       if (backgroundHiddenByScroll && document.body.classList.contains('immersive')) {
         document.body.classList.remove('immersive');
