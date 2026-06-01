@@ -6,14 +6,15 @@
   <title>DIRS: Principled Reflection Separation</title>
   <style>
     :root {
-      --ink: #111318;
-      --muted: #5f6673;
-      --line: #e1e5eb;
+      --ink: #10131a;
+      --muted: #626b7a;
+      --line: #e3e8ef;
       --paper: #ffffff;
-      --soft: #f5f7fa;
+      --soft: #f6f8fb;
+      --soft-blue: #eef5ff;
       --accent: #1f6feb;
-      --accent-dark: #0d3d8c;
-      --warm: #a65f2b;
+      --accent-deep: #0d3d8c;
+      --orange: #d06b22;
     }
 
     * {
@@ -22,14 +23,14 @@
 
     html {
       scroll-behavior: smooth;
-      background: #000;
+      background: #05070b;
     }
 
     body {
       margin: 0;
       color: var(--ink);
       background: var(--paper);
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       line-height: 1.65;
     }
 
@@ -42,144 +43,259 @@
       text-decoration: underline;
     }
 
-    .header-visual {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      height: 100vh;
-      background: #000 url("images/header.png") center center / cover no-repeat;
-      pointer-events: none;
-      will-change: opacity;
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+      background: #05070b;
+      isolation: isolate;
     }
 
-    .header-visual::after {
-      content: "";
+    .hero-bg {
+      position: absolute;
+      inset: 0 auto auto 0;
+      z-index: 0;
+      width: 100%;
+      height: auto;
+      min-height: 100vh;
+      object-fit: contain;
+      object-position: top center;
+      display: block;
+    }
+
+    .hero-shade {
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.16));
-    }
-
-    .cover-scroll {
-      position: relative;
       z-index: 1;
-      height: 100vh;
-      background: transparent;
+      background:
+        radial-gradient(circle at 24% 18%, rgba(31,111,235,0.34), transparent 34%),
+        radial-gradient(circle at 84% 26%, rgba(208,107,34,0.28), transparent 30%),
+        linear-gradient(180deg, rgba(3,7,18,0.42), rgba(3,7,18,0.60) 58%, rgba(3,7,18,0.70));
     }
 
-    .page {
-      position: relative;
+    .hero::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: min(28vh, 260px);
       z-index: 2;
-      background: var(--paper);
-      border-top: 1px solid rgba(255,255,255,0.55);
-      box-shadow: 0 -24px 80px rgba(0,0,0,0.18);
+      background: linear-gradient(180deg, rgba(255,255,255,0), var(--paper));
+      pointer-events: none;
     }
 
-    .container {
+    .hero-shell {
+      position: relative;
+      z-index: 3;
       width: min(1180px, calc(100% - 40px));
+      min-height: 100vh;
       margin: 0 auto;
-      padding: 64px 0 88px;
+      display: grid;
+      align-items: center;
+      padding: 72px 0 96px;
     }
 
-    header {
-      text-align: center;
-      padding-bottom: 38px;
-      border-bottom: 1px solid var(--line);
+    .hero-panel {
+      max-width: 980px;
+      padding: clamp(24px, 5vw, 54px);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 18px;
+      color: #fff;
+      background: rgba(6, 11, 24, 0.34);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.24);
+      backdrop-filter: blur(10px);
+    }
+
+    .content-layer {
+      transition:
+        opacity 780ms cubic-bezier(.22,.61,.36,1),
+        transform 780ms cubic-bezier(.22,.61,.36,1),
+        filter 780ms cubic-bezier(.22,.61,.36,1);
+      will-change: opacity, transform, filter;
+    }
+
+    body.immersive .content-layer {
+      opacity: 0;
+      transform: translateY(32px) scale(0.985);
+      filter: blur(12px) saturate(0.82);
+      pointer-events: none;
+    }
+
+    .background-toggle-hint {
+      position: fixed;
+      left: 50%;
+      bottom: 26px;
+      z-index: 20;
+      padding: 8px 13px;
+      border-radius: 999px;
+      color: rgba(255,255,255,0.78);
+      background: rgba(5, 7, 11, 0.34);
+      backdrop-filter: blur(12px);
+      font-size: 0.78rem;
+      opacity: 0;
+      transform: translate(-50%, 10px);
+      transition: opacity 520ms ease, transform 520ms ease;
+      pointer-events: none;
+    }
+
+    body.immersive .background-toggle-hint {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .kicker {
+      margin: 0 0 14px;
+      color: #a9cdfc;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.82rem;
+      font-weight: 800;
     }
 
     h1 {
-      max-width: 1040px;
-      margin: 0 auto 20px;
-      color: var(--ink);
-      font-size: clamp(2.2rem, 5vw, 4.8rem);
-      line-height: 1.04;
+      margin: 0 0 18px;
+      font-size: clamp(2.4rem, 6vw, 5.4rem);
+      line-height: 0.99;
       letter-spacing: 0;
-      font-weight: 780;
+      font-weight: 820;
     }
 
     .subtitle {
-      max-width: 880px;
-      margin: 0 auto 24px;
-      color: var(--muted);
-      font-size: clamp(1rem, 2vw, 1.25rem);
+      max-width: 850px;
+      margin: 0 0 26px;
+      color: rgba(255,255,255,0.82);
+      font-size: clamp(1.02rem, 2vw, 1.3rem);
     }
 
     .authors {
-      margin: 0 auto 20px;
-      color: #303642;
-      font-size: 1.04rem;
+      margin: 0 0 8px;
+      color: rgba(255,255,255,0.92);
+      font-size: 1.05rem;
     }
 
     .authors a {
-      font-weight: 620;
+      color: #fff;
+      font-weight: 720;
     }
 
     .affiliation {
-      margin: -8px 0 24px;
-      color: var(--muted);
-      font-size: 0.98rem;
+      margin: 0 0 26px;
+      color: rgba(255,255,255,0.70);
+      font-size: 0.96rem;
     }
 
     .links {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      justify-content: center;
-      margin-top: 22px;
     }
 
     .links a {
       display: inline-flex;
       align-items: center;
-      min-height: 42px;
-      padding: 0 16px;
-      border: 1px solid #cbd5e1;
+      min-height: 43px;
+      padding: 0 17px;
+      border: 1px solid rgba(255,255,255,0.28);
       border-radius: 999px;
-      color: #172033;
-      background: #fff;
-      font-weight: 680;
-      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+      color: #fff;
+      background: rgba(255,255,255,0.11);
+      font-weight: 760;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
     }
 
     .links a.primary {
-      color: #fff;
-      border-color: var(--accent);
-      background: var(--accent);
+      border-color: #fff;
+      color: #0a1631;
+      background: #fff;
+    }
+
+    .page {
+      position: relative;
+      z-index: 2;
+      margin-top: -2px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.58), rgba(255,255,255,0.88) 72px, rgba(255,255,255,0.96));
+      backdrop-filter: blur(18px) saturate(1.08);
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 74px 0 90px;
     }
 
     section {
-      padding: 54px 0 0;
+      margin: 52px 0 0;
+      padding: 34px;
+      border: 1px solid rgba(226, 232, 240, 0.78);
+      border-radius: 20px;
+      background: rgba(255,255,255,0.70);
+      box-shadow: 0 22px 70px rgba(15, 23, 42, 0.08);
+      backdrop-filter: blur(18px) saturate(1.08);
+    }
+
+    section:first-child {
+      margin-top: 0;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 0.7fr 1fr;
+      gap: 34px;
+      align-items: end;
+      margin-bottom: 28px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.78rem;
+      font-weight: 820;
     }
 
     h2 {
-      margin: 0 0 20px;
-      font-size: clamp(1.7rem, 3vw, 2.5rem);
-      line-height: 1.15;
+      margin: 0;
+      font-size: clamp(1.9rem, 3.4vw, 3rem);
+      line-height: 1.08;
       letter-spacing: 0;
     }
 
     h3 {
       margin: 28px 0 14px;
       font-size: 1.18rem;
+      letter-spacing: 0;
     }
 
     .section-lead {
-      max-width: 900px;
-      margin: 0 auto 26px;
+      margin: 0;
       color: var(--muted);
-      text-align: center;
       font-size: 1.05rem;
     }
 
     .abstract {
-      max-width: 960px;
-      margin: 0 auto;
-      color: #333a46;
+      max-width: 980px;
+      margin: 0;
+      color: #343b48;
       text-align: left;
-      font-size: 1.05rem;
+      font-size: 1.06rem;
+    }
+
+    .callout {
+      margin-top: 24px;
+      padding: 22px 24px;
+      border: 1px solid #d8e4f4;
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #f9fbff, #f4f8ff);
+      color: #2c3a4f;
     }
 
     .figure {
-      margin: 26px auto;
+      margin: 30px auto;
       text-align: center;
     }
 
@@ -187,18 +303,20 @@
       display: block;
       max-width: 100%;
       margin: 0 auto;
-      border-radius: 8px;
+      border-radius: 12px;
       border: 1px solid var(--line);
       background: #fff;
+      box-shadow: 0 16px 42px rgba(15, 23, 42, 0.08);
     }
 
     .figure.clean img {
       border: 0;
       border-radius: 0;
+      box-shadow: none;
     }
 
     .caption {
-      margin-top: 10px;
+      margin-top: 12px;
       color: var(--muted);
       font-size: 0.95rem;
     }
@@ -207,20 +325,38 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 18px;
-      margin-top: 28px;
+      margin-top: 30px;
     }
 
     .method-card {
+      position: relative;
+      overflow: hidden;
       border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 22px;
-      background: linear-gradient(180deg, #fff, #f9fafc);
+      border-radius: 12px;
+      padding: 24px;
+      background: rgba(255,255,255,0.58);
       text-align: left;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+      backdrop-filter: blur(14px);
+    }
+
+    .method-card::before {
+      content: attr(data-step);
+      display: inline-grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      margin-bottom: 18px;
+      border-radius: 50%;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent), var(--orange));
+      font-weight: 800;
+      font-size: 0.86rem;
     }
 
     .method-card h3 {
-      margin-top: 0;
-      color: var(--accent-dark);
+      margin: 0 0 10px;
+      color: var(--accent-deep);
     }
 
     .method-card p {
@@ -228,12 +364,38 @@
       color: var(--muted);
     }
 
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 28px 0;
+    }
+
+    .metric {
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.66);
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.05);
+      backdrop-filter: blur(14px);
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--accent-deep);
+      font-size: 1.55rem;
+      line-height: 1.1;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 18px;
       font-size: 0.96rem;
-      overflow: hidden;
     }
 
     th, td {
@@ -246,7 +408,7 @@
     th {
       background: var(--soft);
       color: #263041;
-      font-weight: 720;
+      font-weight: 760;
     }
 
     td.num, th.num {
@@ -257,16 +419,20 @@
     .table-wrap {
       overflow-x: auto;
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fff;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.74);
+      box-shadow: 0 14px 36px rgba(15, 23, 42, 0.06);
+      backdrop-filter: blur(14px);
     }
 
     .survey-frame {
       width: 100%;
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fff;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.74);
       display: block;
+      box-shadow: 0 14px 36px rgba(15, 23, 42, 0.06);
+      backdrop-filter: blur(14px);
     }
 
     .survey-frame-main {
@@ -294,9 +460,11 @@
       position: relative;
       width: 100%;
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 12px;
       overflow: hidden;
       background: #000;
+      box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
+      backdrop-filter: blur(14px);
     }
 
     .image-wrapper {
@@ -392,7 +560,7 @@
       margin: 0;
       padding: 20px;
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 12px;
       background: #f8fafc;
       color: #1f2937;
       white-space: pre-wrap;
@@ -410,14 +578,25 @@
     }
 
     @media (max-width: 900px) {
+      .hero-shell,
       .container {
         width: min(100% - 28px, 1180px);
-        padding-top: 44px;
       }
 
+      .hero-panel {
+        border-radius: 14px;
+      }
+
+      .section-head,
       .method-grid,
+      .metric-strip,
       .slider-pair {
         grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 22px;
+        border-radius: 16px;
       }
 
       .survey-frame-main,
@@ -428,12 +607,12 @@
   </style>
 </head>
 <body>
-  <div id="headerVisual" class="header-visual" aria-hidden="true"></div>
-  <div class="cover-scroll" aria-label="DIRS visual cover"></div>
-
-  <main class="page">
-    <div class="container">
-      <header>
+  <section id="hero" class="hero">
+    <img class="hero-bg" src="images/header.png" alt="">
+    <div class="hero-shade" aria-hidden="true"></div>
+    <div class="hero-shell content-layer">
+      <header class="hero-panel">
+        <p class="kicker">Official Project Page</p>
         <h1>Principled Reflection Separation via Nonlinear Superposition and Feature Interaction</h1>
         <p class="subtitle">
           A unified DIRS framework for reflection separation, reflection scene reconstruction,
@@ -454,9 +633,22 @@
           <a href="#demo">Interactive Demo</a>
         </nav>
       </header>
+    </div>
+  </section>
 
+  <main class="page content-layer">
+    <div class="container">
       <section id="abstract">
-        <h2>Abstract</h2>
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Abstract</p>
+            <h2>Reflection separation with nonlinear formation priors</h2>
+          </div>
+          <p class="section-lead">
+            DIRS revisits reflection formation in the sRGB domain and unifies
+            dual-stream architectures under a common interaction paradigm.
+          </p>
+        </div>
         <p class="abstract">
           Reflection superimposition, resulting from the entanglement of transmission and
           reflection layers in images, remains a long-standing challenge in computational
@@ -474,15 +666,23 @@
           space and introduce a learnable nonlinear interaction term, which more accurately
           captures real-world layer blending and substantially improves decomposition fidelity.
         </p>
+        <div class="callout">
+          The same framework supports three released variants: an efficient activation-based
+          CNN, a mutually gated CNN, and a Transformer model with dual-stream joint attention.
+        </div>
       </section>
 
       <section id="method">
-        <h2>DIRS Framework</h2>
-        <p class="section-lead">
-          DIRS couples a learnable nonlinear superposition model with explicit dual-stream
-          feature interaction, allowing transmission and reflection branches to exchange
-          discriminative evidence while preserving layer-specific structure.
-        </p>
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Method</p>
+            <h2>DIRS Framework</h2>
+          </div>
+          <p class="section-lead">
+            Learnable Offset-Residual Superposition handles nonlinear layer coupling, while
+            dual-stream interaction exchanges discriminative evidence across branches.
+          </p>
+        </div>
         <figure class="figure clean">
           <img src="images/fig_arch_dirs.jpg" alt="DIRS architecture overview">
         </figure>
@@ -491,15 +691,15 @@
         </figure>
 
         <div class="method-grid">
-          <article class="method-card">
+          <article class="method-card" data-step="01">
             <h3>DIRS-YTMT</h3>
             <p>Activation-based CNN interaction that recycles suppressed features between streams.</p>
           </article>
-          <article class="method-card">
+          <article class="method-card" data-step="02">
             <h3>DIRS-MuGI</h3>
             <p>Mutually gated CNN interaction for spatially varying nonlinear reflection coupling.</p>
           </article>
-          <article class="method-card">
+          <article class="method-card" data-step="03">
             <h3>DIRS-PAIR</h3>
             <p>Transformer interaction with dual-stream joint attention and parallel self-attention.</p>
           </article>
@@ -507,11 +707,21 @@
       </section>
 
       <section id="models">
-        <h2>Model Zoo</h2>
-        <p class="section-lead">
-          FLOPs and latency are measured on a single NVIDIA RTX 3090 with 256 x 256 inputs.
-          PSNR/SSIM are averaged over Real20 and SIR<sup>2</sup>.
-        </p>
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Models</p>
+            <h2>Model Zoo</h2>
+          </div>
+          <p class="section-lead">
+            FLOPs and latency are measured on a single NVIDIA RTX 3090 with 256 x 256 inputs.
+            PSNR/SSIM are averaged over Real20 and SIR<sup>2</sup>.
+          </p>
+        </div>
+        <div class="metric-strip">
+          <div class="metric"><strong>3</strong><span>released DIRS variants</span></div>
+          <div class="metric"><strong>26.37</strong><span>DIRS-PAIR average PSNR</span></div>
+          <div class="metric"><strong>0.918</strong><span>DIRS-PAIR average SSIM</span></div>
+        </div>
         <div class="table-wrap">
           <table>
             <thead>
@@ -559,7 +769,16 @@
       </section>
 
       <section id="results">
-        <h2>Visual Results</h2>
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Results</p>
+            <h2>Visual Results</h2>
+          </div>
+          <p class="section-lead">
+            DIRS separates strong real-world reflections and extends naturally to reflection
+            scene reconstruction and polarized image reflection separation.
+          </p>
+        </div>
         <figure class="figure clean">
           <img src="images/fig_realworld.jpg" alt="Real-world reflection separation comparison">
           <figcaption class="caption">Transmission predictions in challenging real-world scenarios.</figcaption>
@@ -575,11 +794,16 @@
       </section>
 
       <section id="survey">
-        <h2>Survey Roadmaps</h2>
-        <p class="section-lead">
-          The paper also organizes decades of reflection removal and separation methods by
-          input modality, physical cue, prior constraint, and network paradigm.
-        </p>
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Survey</p>
+            <h2>Interactive Roadmaps</h2>
+          </div>
+          <p class="section-lead">
+            Decades of reflection removal and separation methods organized by input modality,
+            physical cue, prior constraint, and network paradigm.
+          </p>
+        </div>
         <h3>Single-Image Reflection Removal / Separation</h3>
         <iframe class="survey-frame survey-frame-main" src="survey/index.html?roadmap=single" title="Interactive survey roadmap of single-image reflection removal methods"></iframe>
         <h3>Multiple-Image Reflection Removal / Separation</h3>
@@ -587,11 +811,16 @@
       </section>
 
       <section id="demo">
-        <h2>Interactive Examples</h2>
-        <p class="section-lead">
-          Drag the divider to inspect the input image against the predicted transmission
-          layer, and the reflection layer against a black background.
-        </p>
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Demo</p>
+            <h2>Interactive Examples</h2>
+          </div>
+          <p class="section-lead">
+            Drag the divider to inspect the input image against the predicted transmission
+            layer, and the reflection layer against a black background.
+          </p>
+        </div>
 
         <div class="demo-grid">
           <article>
@@ -697,7 +926,13 @@
       </section>
 
       <section id="citation">
-        <h2>Citation</h2>
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Citation</p>
+            <h2>BibTeX</h2>
+          </div>
+          <p class="section-lead">Please cite DIRS if this project is useful for your research.</p>
+        </div>
         <pre class="bibtex">@article{hu2026dirs,
   title={Principled Reflection Separation via Nonlinear Superposition and Feature Interaction},
   author={Hu, Qiming and Li, Mingjia and Li, Yuntong and Guo, Xiaojie},
@@ -711,12 +946,25 @@
       </footer>
     </div>
   </main>
+  <div class="background-toggle-hint">Click the background to bring the page back</div>
 
   <script>
-    function updateHeaderFade() {
-      const header = document.getElementById('headerVisual');
-      const progress = Math.max(0, Math.min(window.scrollY / window.innerHeight, 1));
-      header.style.opacity = String(1 - progress);
+    function clickedBackground(event) {
+      if (document.body.classList.contains('immersive')) return true;
+      const pageContent = event.target.closest('.content-layer');
+      if (!pageContent) return true;
+      const container = event.target.closest('.hero-shell, .container');
+      if (!container) return true;
+      const rect = container.getBoundingClientRect();
+      const gutter = Math.max(0, (window.innerWidth - rect.width) / 2);
+      return event.clientX < gutter || event.clientX > window.innerWidth - gutter;
+    }
+
+    function initBackgroundToggle() {
+      document.addEventListener('click', (event) => {
+        if (!clickedBackground(event)) return;
+        document.body.classList.toggle('immersive');
+      });
     }
 
     function initSyncedSliders(containerSelectors) {
@@ -769,15 +1017,12 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      updateHeaderFade();
+      initBackgroundToggle();
       initSyncedSliders(['#slider1', '#slider2']);
       initSyncedSliders(['#slider3', '#slider4']);
       initSyncedSliders(['#slider5', '#slider6']);
       initSyncedSliders(['#slider7', '#slider8']);
     });
-
-    window.addEventListener('scroll', updateHeaderFade, { passive: true });
-    window.addEventListener('resize', updateHeaderFade);
   </script>
 </body>
 </html>
