@@ -883,33 +883,37 @@
         <div class="section-head">
           <div>
             <p class="eyebrow">Abstract</p>
-            <h2>Reflection separation with nonlinear formation priors</h2>
+            <h2>Nonlinearity Meets Interaction</h2>
           </div>
           <p class="section-lead">
-            DIRS revisits reflection formation in the sRGB domain and unifies
-            dual-stream architectures under a common interaction paradigm.
+            DIRS tackles real-world layer entanglement by introducing a learnable
+            nonlinear superposition model and unifying dual-stream architectures under
+            a generalized interaction paradigm.
           </p>
         </div>
         <p class="abstract">
-          Reflection superimposition, resulting from the entanglement of transmission and
-          reflection layers in images, remains a long-standing challenge in computational
-          photography and computer vision due to its inherently ill-posed nature. This work
-          presents a comprehensive framework that advances both the theoretical understanding
-          and practical effectiveness of single-image reflection separation. We begin by
-          surveying and systematically categorizing decades of existing methods, offering an
-          organized taxonomy based on input modalities, prior constraints, and architectural
-          paradigms. Considering the limitations of existing single- and dual-branch models,
-          we introduce a generalized dual-stream interactive architecture that facilitates
-          multi-scale and high-dimensional feature exchange between transmission and reflection
-          pathways. This design unifies activation-based, gate-based, and attention-based
-          interaction mechanisms, and is compatible with both CNN and Transformer backbones.
-          Furthermore, we challenge the conventional linear composition model in the sRGB
-          space and introduce a learnable nonlinear interaction term, which more accurately
-          captures real-world layer blending and substantially improves decomposition fidelity.
+          <strong>The Challenge:</strong> Reflection superimposition remains a severely
+          ill-posed problem. Existing methods often struggle in real-world scenarios because
+          they rely on flawed linear blending assumptions in sRGB space or treat layer
+          disentanglement as isolated, single-stream subproblems.
+        </p>
+        <p class="abstract">
+          <strong>Nonlinear Formation:</strong> We challenge the conventional linear
+          composition model. DIRS introduces a learnable nonlinear interaction term that
+          faithfully captures the complex layer couplings and biases introduced by real-world
+          Image Signal Processing (ISP) pipelines.
+        </p>
+        <p class="abstract">
+          <strong>Unified Interaction:</strong> To resolve the intrinsic ambiguity, we
+          propose a generalized dual-stream interactive architecture. It facilitates deep,
+          bidirectional feature exchange between transmission and reflection pathways. This
+          principled framework seamlessly unifies activation-based, gate-based, and
+          attention-based mechanisms across both CNN and Transformer backbones.
         </p>
         <div class="callout">
-          The same framework supports three released variants: an efficient activation-based
-          CNN, a mutually gated CNN, and a Transformer model with dual-stream joint attention.
+          <strong>One Framework, Three Variants:</strong> DIRS provides highly configurable
+          solutions, including an efficient activation-based CNN (YTMT), a mutually gated CNN
+          (MuGI), and a state-of-the-art Transformer with dual-stream joint attention (PAIR).
         </div>
       </section>
 
