@@ -61,6 +61,9 @@
       width: 100vw;
       max-width: none;
       height: auto;
+      min-height: 100vh;
+      object-fit: cover;
+      object-position: top center;
     }
 
     .hero-shade {
@@ -760,12 +763,24 @@
         width: min(100% - 28px, 1180px);
       }
 
+      .ambient-bg img {
+        width: 100%;
+        height: var(--mobile-hero-image-height, 145vh);
+      }
+
+      .hero-shell {
+        height: 100svh;
+        min-height: 100svh;
+        padding: 68px 0 112px;
+      }
+
       .hero-panel {
+        padding: 20px;
         border-radius: 14px;
       }
 
       .hero-panel h2 {
-        font-size: clamp(1.35rem, 6.5vw, 2.75rem);
+        font-size: clamp(0.95rem, 4.8vw, 2.75rem);
       }
 
       .section-head,
@@ -1184,7 +1199,7 @@
       if (!ambient || !image || !hero) return;
 
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-      const imageHeight = image.getBoundingClientRect().height;
+      const imageHeight = Math.max(image.scrollHeight, image.getBoundingClientRect().height);
       const fadeDistance = Math.max(180, Math.min(viewportHeight * 0.45, 420));
       const heroTop = hero.offsetTop;
       const heroHeight = hero.offsetHeight;
