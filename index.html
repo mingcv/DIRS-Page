@@ -662,7 +662,7 @@
     }
 
     .result-image {
-      clip-path: inset(0 50% 0 0);
+      clip-path: inset(0 0 0 50%);
     }
 
     .slider-bar {
@@ -1059,18 +1059,18 @@
           </div>
           <p class="section-lead">
             Drag the divider to inspect the input image against the predicted transmission
-            layer, and the reflection layer against a black background.
+            layer, and the predicted reflection layer against the reconstructed reflection scene.
           </p>
         </div>
 
         <div class="examples-grid">
           <article>
-            <h3>Example 1</h3>
+            <h3>DSC05656</h3>
             <div class="slider-pair">
               <div class="slider-container" id="slider1">
                 <div class="image-wrapper">
-                  <img src="images/DSC05593/m_input.png" alt="Input image example 1">
-                  <img src="images/DSC05593/dsit_test_epoch66_real_tj_l.png" class="result-image" alt="Transmission layer example 1">
+                  <img src="images/composite/DSC05656/I_blended.png" alt="Input image DSC05656">
+                  <img src="images/composite/DSC05656/T_transmission.png" class="result-image" alt="Transmission layer DSC05656">
                 </div>
                 <div class="slider-bar"></div>
                 <div class="slider-handle"></div>
@@ -1079,23 +1079,24 @@
               </div>
               <div class="slider-container" id="slider2">
                 <div class="image-wrapper">
-                  <img src="images/DSC05593/dsit_test_epoch66_real_tj_r.png" class="result-image" alt="Reflection layer example 1">
+                  <img src="images/composite/DSC05656/R_pred_resized.png" alt="Reflection layer DSC05656">
+                  <img src="images/composite/DSC05656/R_high_pred.png" class="result-image" alt="Reflection scene DSC05656">
                 </div>
                 <div class="slider-bar"></div>
                 <div class="slider-handle"></div>
-                <div class="image-label label-left">Black</div>
-                <div class="image-label label-right">Reflection</div>
+                <div class="image-label label-left">Reflection</div>
+                <div class="image-label label-right">Reflection Scene</div>
               </div>
             </div>
           </article>
 
           <article>
-            <h3>Example 2</h3>
+            <h3>DSC05741</h3>
             <div class="slider-pair">
               <div class="slider-container" id="slider3">
                 <div class="image-wrapper">
-                  <img src="images/DSC05764/m_input.png" alt="Input image example 2">
-                  <img src="images/DSC05764/dsit_test_epoch66_real_tj_l.png" class="result-image" alt="Transmission layer example 2">
+                  <img src="images/composite/DSC05741/I_blended.png" alt="Input image DSC05741">
+                  <img src="images/composite/DSC05741/T_transmission.png" class="result-image" alt="Transmission layer DSC05741">
                 </div>
                 <div class="slider-bar"></div>
                 <div class="slider-handle"></div>
@@ -1104,23 +1105,24 @@
               </div>
               <div class="slider-container" id="slider4">
                 <div class="image-wrapper">
-                  <img src="images/DSC05764/dsit_test_epoch66_real_tj_r.png" class="result-image" alt="Reflection layer example 2">
+                  <img src="images/composite/DSC05741/R_pred_resized.png" alt="Reflection layer DSC05741">
+                  <img src="images/composite/DSC05741/R_high_pred.png" class="result-image" alt="Reflection scene DSC05741">
                 </div>
                 <div class="slider-bar"></div>
                 <div class="slider-handle"></div>
-                <div class="image-label label-left">Black</div>
-                <div class="image-label label-right">Reflection</div>
+                <div class="image-label label-left">Reflection</div>
+                <div class="image-label label-right">Reflection Scene</div>
               </div>
             </div>
           </article>
 
           <article>
-            <h3>Example 3</h3>
+            <h3>DSC05751</h3>
             <div class="slider-pair">
               <div class="slider-container" id="slider5">
                 <div class="image-wrapper">
-                  <img src="images/DSC05708/m_input.png" alt="Input image example 3">
-                  <img src="images/DSC05708/dsit_test_epoch66_real_tj_l.png" class="result-image" alt="Transmission layer example 3">
+                  <img src="images/composite/DSC05751/I_blended.png" alt="Input image DSC05751">
+                  <img src="images/composite/DSC05751/T_transmission.png" class="result-image" alt="Transmission layer DSC05751">
                 </div>
                 <div class="slider-bar"></div>
                 <div class="slider-handle"></div>
@@ -1129,23 +1131,24 @@
               </div>
               <div class="slider-container" id="slider6">
                 <div class="image-wrapper">
-                  <img src="images/DSC05708/dsit_test_epoch66_real_tj_r.png" class="result-image" alt="Reflection layer example 3">
+                  <img src="images/composite/DSC05751/R_pred_resized.png" alt="Reflection layer DSC05751">
+                  <img src="images/composite/DSC05751/R_high_pred.png" class="result-image" alt="Reflection scene DSC05751">
                 </div>
                 <div class="slider-bar"></div>
                 <div class="slider-handle"></div>
-                <div class="image-label label-left">Black</div>
-                <div class="image-label label-right">Reflection</div>
+                <div class="image-label label-left">Reflection</div>
+                <div class="image-label label-right">Reflection Scene</div>
               </div>
             </div>
           </article>
 
           <article>
-            <h3>Example 4</h3>
+            <h3>DSC05762</h3>
             <div class="slider-pair">
               <div class="slider-container" id="slider7">
                 <div class="image-wrapper">
-                  <img src="images/DSC05745/m_input.png" alt="Input image example 4">
-                  <img src="images/DSC05745/dsit_test_epoch66_real_tj_l.png" class="result-image" alt="Transmission layer example 4">
+                  <img src="images/composite/DSC05762/I_blended.png" alt="Input image DSC05762">
+                  <img src="images/composite/DSC05762/T_transmission.png" class="result-image" alt="Transmission layer DSC05762">
                 </div>
                 <div class="slider-bar"></div>
                 <div class="slider-handle"></div>
@@ -1154,12 +1157,91 @@
               </div>
               <div class="slider-container" id="slider8">
                 <div class="image-wrapper">
-                  <img src="images/DSC05745/dsit_test_epoch66_real_tj_r.png" class="result-image" alt="Reflection layer example 4">
+                  <img src="images/composite/DSC05762/R_pred_resized.png" alt="Reflection layer DSC05762">
+                  <img src="images/composite/DSC05762/R_high_pred.png" class="result-image" alt="Reflection scene DSC05762">
                 </div>
                 <div class="slider-bar"></div>
                 <div class="slider-handle"></div>
-                <div class="image-label label-left">Black</div>
-                <div class="image-label label-right">Reflection</div>
+                <div class="image-label label-left">Reflection</div>
+                <div class="image-label label-right">Reflection Scene</div>
+              </div>
+            </div>
+          </article>
+
+          <article>
+            <h3>DSC06752</h3>
+            <div class="slider-pair">
+              <div class="slider-container" id="slider9">
+                <div class="image-wrapper">
+                  <img src="images/composite/DSC06752/I_blended.png" alt="Input image DSC06752">
+                  <img src="images/composite/DSC06752/T_transmission.png" class="result-image" alt="Transmission layer DSC06752">
+                </div>
+                <div class="slider-bar"></div>
+                <div class="slider-handle"></div>
+                <div class="image-label label-left">Input</div>
+                <div class="image-label label-right">Transmission</div>
+              </div>
+              <div class="slider-container" id="slider10">
+                <div class="image-wrapper">
+                  <img src="images/composite/DSC06752/R_pred_resized.png" alt="Reflection layer DSC06752">
+                  <img src="images/composite/DSC06752/R_high_pred.png" class="result-image" alt="Reflection scene DSC06752">
+                </div>
+                <div class="slider-bar"></div>
+                <div class="slider-handle"></div>
+                <div class="image-label label-left">Reflection</div>
+                <div class="image-label label-right">Reflection Scene</div>
+              </div>
+            </div>
+          </article>
+
+          <article>
+            <h3>DSC06821</h3>
+            <div class="slider-pair">
+              <div class="slider-container" id="slider11">
+                <div class="image-wrapper">
+                  <img src="images/composite/DSC06821/I_blended.png" alt="Input image DSC06821">
+                  <img src="images/composite/DSC06821/T_transmission.png" class="result-image" alt="Transmission layer DSC06821">
+                </div>
+                <div class="slider-bar"></div>
+                <div class="slider-handle"></div>
+                <div class="image-label label-left">Input</div>
+                <div class="image-label label-right">Transmission</div>
+              </div>
+              <div class="slider-container" id="slider12">
+                <div class="image-wrapper">
+                  <img src="images/composite/DSC06821/R_pred_resized.png" alt="Reflection layer DSC06821">
+                  <img src="images/composite/DSC06821/R_high_pred.png" class="result-image" alt="Reflection scene DSC06821">
+                </div>
+                <div class="slider-bar"></div>
+                <div class="slider-handle"></div>
+                <div class="image-label label-left">Reflection</div>
+                <div class="image-label label-right">Reflection Scene</div>
+              </div>
+            </div>
+          </article>
+
+          <article>
+            <h3>DSC06831</h3>
+            <div class="slider-pair">
+              <div class="slider-container" id="slider13">
+                <div class="image-wrapper">
+                  <img src="images/composite/DSC06831/I_blended.png" alt="Input image DSC06831">
+                  <img src="images/composite/DSC06831/T_transmission.png" class="result-image" alt="Transmission layer DSC06831">
+                </div>
+                <div class="slider-bar"></div>
+                <div class="slider-handle"></div>
+                <div class="image-label label-left">Input</div>
+                <div class="image-label label-right">Transmission</div>
+              </div>
+              <div class="slider-container" id="slider14">
+                <div class="image-wrapper">
+                  <img src="images/composite/DSC06831/R_pred_resized.png" alt="Reflection layer DSC06831">
+                  <img src="images/composite/DSC06831/R_high_pred.png" class="result-image" alt="Reflection scene DSC06831">
+                </div>
+                <div class="slider-bar"></div>
+                <div class="slider-handle"></div>
+                <div class="image-label label-left">Reflection</div>
+                <div class="image-label label-right">Reflection Scene</div>
               </div>
             </div>
           </article>
@@ -1334,7 +1416,7 @@
 
         bar.style.left = `${pct}%`;
         handle.style.left = `${pct}%`;
-        resultImg.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+        resultImg.style.clipPath = `inset(0 0 0 ${pct}%)`;
       }
 
       function clientX(event) {
