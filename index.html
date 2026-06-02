@@ -241,10 +241,14 @@
 
     .hero-panel h2 {
       margin: 0 0 18px;
-      font-size: clamp(2.4rem, 6vw, 5.4rem);
-      line-height: 0.99;
+      font-size: clamp(2.1rem, 4.9vw, 4.45rem);
+      line-height: 1.04;
       letter-spacing: 0;
       font-weight: 820;
+    }
+
+    .hero-panel h2 span {
+      display: block;
     }
 
     .subtitle {
@@ -759,6 +763,10 @@
         border-radius: 14px;
       }
 
+      .hero-panel h2 {
+        font-size: clamp(1.85rem, 8vw, 3.1rem);
+      }
+
       .section-head,
       .method-grid,
       .metric-strip,
@@ -816,7 +824,11 @@
     <div class="hero-shell content-layer">
       <header class="hero-panel">
         <p class="kicker">Official Project Page</p>
-        <h2>Principled Reflection Separation via Nonlinear Superposition and Feature Interaction</h2>
+        <h2>
+          <span>Principled Reflection Separation</span>
+          <span>via Nonlinear Superposition</span>
+          <span>and Feature Interaction</span>
+        </h2>
         <p class="subtitle">
           A unified DIRS framework for reflection separation, reflection scene reconstruction,
           and polarized multi-image reflection separation.
